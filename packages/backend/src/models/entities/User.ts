@@ -134,6 +134,18 @@ export class User {
 		default: false,
 		comment: 'Whether the User is the root.',
 	})
+	public makeyHideLocalTimeline: boolean;
+
+	@Column('boolean', {
+		default: false,
+		comment: 'Hide local and social timeline.',
+	})
+	public makeyHideFederatedTimeline: boolean;
+
+	@Column('boolean', {
+		default: false,
+		comment: 'Hide global timeline.',
+	})
 	public isRoot: boolean;
 
 	@Index()

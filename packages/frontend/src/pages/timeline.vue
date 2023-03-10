@@ -40,6 +40,8 @@ const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
 const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
+const makeyHideLocalTimeline = $i != null && $i.makeyHideLocalTimeline;
+const makeyHideGlobalTimeline = $i != null && $i.makeyHideFederatedTimeline;
 const keymap = {
 	't': focus,
 };
@@ -121,7 +123,7 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts._timelines.home,
 	icon: 'ti ti-home',
 	iconOnly: true,
-}, ...(isLocalTimelineAvailable ? [{
+}, ...(isLocalTimelineAvailable && !makeyHideLocalTimeline ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
 	icon: 'ti ti-planet',
@@ -131,7 +133,7 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts._timelines.social,
 	icon: 'ti ti-rocket',
 	iconOnly: true,
-}] : []), ...(isGlobalTimelineAvailable ? [{
+}] : []), ...(isGlobalTimelineAvailable && !makeyHideGlobalTimeline ? [{
 	key: 'global',
 	title: i18n.ts._timelines.global,
 	icon: 'ti ti-whirl',
