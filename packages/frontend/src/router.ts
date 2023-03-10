@@ -75,6 +75,10 @@ export const routes = [{
 		name: 'security',
 		component: page(() => import('./pages/settings/security.vue')),
 	}, {
+		path: '/makeyPublicTimeline',
+		name: 'makeyPublicTimeline',
+		component: page(() => import('./pages/settings/makeyPublicTimeline.vue')),
+	}, {
 		path: '/general',
 		name: 'general',
 		component: page(() => import('./pages/settings/general.vue')),

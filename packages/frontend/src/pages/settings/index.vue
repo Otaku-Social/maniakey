@@ -94,6 +94,11 @@ const menuDef = computed(() => [{
 		text: i18n.ts.security,
 		to: '/settings/security',
 		active: currentPage?.route.name === 'security',
+	}, {
+		icon: 'ti ti-world',
+		text: '公開タイムライン',
+		to: '/settings/makeyPublicTimeline',
+		active: currentPage?.route.name === 'makeyPublicTimeline',
 	}],
 }, {
 	title: i18n.ts.clientSettings,
