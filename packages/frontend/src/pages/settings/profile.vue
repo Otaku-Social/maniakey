@@ -61,6 +61,8 @@
 		<div class="_gaps_m">
 			<MkSwitch v-model="profile.isCat">{{ i18n.ts.flagAsCat }}<template #caption>{{ i18n.ts.flagAsCatDescription }}</template></MkSwitch>
 			<MkSwitch v-model="profile.isBot">{{ i18n.ts.flagAsBot }}<template #caption>{{ i18n.ts.flagAsBotDescription }}</template></MkSwitch>
+			<MkSwitch v-model="profile.makeyHideLocalTimeline">ローカル・ソーシャルを非表示にする<template #caption>この設定をオンにしてもノートの公開範囲によっては公開タイムラインに掲載されます。</template></MkSwitch>
+			<MkSwitch v-model="profile.makeyHideFederatedTimeline">グローバルを非表示にする<template #caption>この設定をオンにしてもノートの公開範囲によっては公開タイムラインに掲載されます。</template></MkSwitch>
 		</div>
 	</MkFolder>
 
@@ -95,6 +97,8 @@ const profile = reactive({
 	lang: $i.lang,
 	isBot: $i.isBot,
 	isCat: $i.isCat,
+	makeyHideLocalTimeline: $i.makeyHideLocalTimeline,
+	makeyHideFederatedTimeline: $i.makeyHideFederatedTimeline,
 	showTimelineReplies: $i.showTimelineReplies,
 });
 
@@ -132,6 +136,8 @@ function save() {
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
+		makeyHideLocalTimeline: !!profile.makeyHideLocalTimeline,
+		makeyHideFederatedTimeline: !!profile.makeyHideFederatedTimeline,
 		showTimelineReplies: !!profile.showTimelineReplies,
 	});
 	claimAchievement('profileFilled');
