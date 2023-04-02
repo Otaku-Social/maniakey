@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import type { UsersRepository } from '@/models/index.js';
-import { Cache } from '@/misc/cache.js';
-import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/models/entities/User.js';
+import { KVCache } from '@/misc/cache.js';
+import type { LocalUser, User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -11,10 +11,10 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class UserCacheService implements OnApplicationShutdown {
-	public userByIdCache: Cache<CacheableUser>;
-	public localUserByNativeTokenCache: Cache<CacheableLocalUser | null>;
-	public localUserByIdCache: Cache<CacheableLocalUser>;
-	public uriPersonCache: Cache<CacheableUser | null>;
+	public userByIdCache: KVCache<User>;
+	public localUserByNativeTokenCache: KVCache<LocalUser | null>;
+	public localUserByIdCache: KVCache<LocalUser>;
+	public uriPersonCache: KVCache<User | null>;
 
 	constructor(
 		@Inject(DI.redisSubscriber)
@@ -27,10 +27,10 @@ export class UserCacheService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.userByIdCache = new Cache<CacheableUser>(Infinity);
-		this.localUserByNativeTokenCache = new Cache<CacheableLocalUser | null>(Infinity);
-		this.localUserByIdCache = new Cache<CacheableLocalUser>(Infinity);
-		this.uriPersonCache = new Cache<CacheableUser | null>(Infinity);
+		this.userByIdCache = new KVCache<User>(Infinity);
+		this.localUserByNativeTokenCache = new KVCache<LocalUser | null>(Infinity);
+		this.localUserByIdCache = new KVCache<LocalUser>(Infinity);
+		this.uriPersonCache = new KVCache<User | null>(Infinity);
 
 		this.redisSubscriber.on('message', this.onMessage);
 	}
@@ -58,7 +58,7 @@ export class UserCacheService implements OnApplicationShutdown {
 					break;
 				}
 				case 'userTokenRegenerated': {
-					const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as ILocalUser;
+					const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as LocalUser;
 					this.localUserByNativeTokenCache.delete(body.oldToken);
 					this.localUserByNativeTokenCache.set(body.newToken, user);
 					break;

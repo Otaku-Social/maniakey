@@ -13,6 +13,7 @@ import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
 import { ChannelNotePining } from '@/models/entities/ChannelNotePining.js';
 import { Clip } from '@/models/entities/Clip.js';
 import { ClipNote } from '@/models/entities/ClipNote.js';
+import { ClipFavorite } from '@/models/entities/ClipFavorite.js';
 import { DriveFile } from '@/models/entities/DriveFile.js';
 import { DriveFolder } from '@/models/entities/DriveFolder.js';
 import { Emoji } from '@/models/entities/Emoji.js';
@@ -22,11 +23,11 @@ import { GalleryLike } from '@/models/entities/GalleryLike.js';
 import { GalleryPost } from '@/models/entities/GalleryPost.js';
 import { Hashtag } from '@/models/entities/Hashtag.js';
 import { Instance } from '@/models/entities/Instance.js';
-import { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import { Meta } from '@/models/entities/Meta.js';
 import { ModerationLog } from '@/models/entities/ModerationLog.js';
 import { MutedNote } from '@/models/entities/MutedNote.js';
 import { Muting } from '@/models/entities/Muting.js';
+import { RenoteMuting } from '@/models/entities/RenoteMuting.js';
 import { Note } from '@/models/entities/Note.js';
 import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
 import { NoteReaction } from '@/models/entities/NoteReaction.js';
@@ -47,9 +48,6 @@ import { Signin } from '@/models/entities/Signin.js';
 import { SwSubscription } from '@/models/entities/SwSubscription.js';
 import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import { User } from '@/models/entities/User.js';
-import { UserGroup } from '@/models/entities/UserGroup.js';
-import { UserGroupInvitation } from '@/models/entities/UserGroupInvitation.js';
-import { UserGroupJoining } from '@/models/entities/UserGroupJoining.js';
 import { UserIp } from '@/models/entities/UserIp.js';
 import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UserList } from '@/models/entities/UserList.js';
@@ -84,6 +82,7 @@ export {
 	ChannelNotePining,
 	Clip,
 	ClipNote,
+	ClipFavorite,
 	DriveFile,
 	DriveFolder,
 	Emoji,
@@ -93,11 +92,11 @@ export {
 	GalleryPost,
 	Hashtag,
 	Instance,
-	MessagingMessage,
 	Meta,
 	ModerationLog,
 	MutedNote,
 	Muting,
+	RenoteMuting,
 	Note,
 	NoteFavorite,
 	NoteReaction,
@@ -118,9 +117,6 @@ export {
 	SwSubscription,
 	UsedUsername,
 	User,
-	UserGroup,
-	UserGroupInvitation,
-	UserGroupJoining,
 	UserIp,
 	UserKeypair,
 	UserList,
@@ -154,6 +150,7 @@ export type ChannelFollowingsRepository = Repository<ChannelFollowing>;
 export type ChannelNotePiningsRepository = Repository<ChannelNotePining>;
 export type ClipsRepository = Repository<Clip>;
 export type ClipNotesRepository = Repository<ClipNote>;
+export type ClipFavoritesRepository = Repository<ClipFavorite>;
 export type DriveFilesRepository = Repository<DriveFile>;
 export type DriveFoldersRepository = Repository<DriveFolder>;
 export type EmojisRepository = Repository<Emoji>;
@@ -163,11 +160,11 @@ export type GalleryLikesRepository = Repository<GalleryLike>;
 export type GalleryPostsRepository = Repository<GalleryPost>;
 export type HashtagsRepository = Repository<Hashtag>;
 export type InstancesRepository = Repository<Instance>;
-export type MessagingMessagesRepository = Repository<MessagingMessage>;
 export type MetasRepository = Repository<Meta>;
 export type ModerationLogsRepository = Repository<ModerationLog>;
 export type MutedNotesRepository = Repository<MutedNote>;
 export type MutingsRepository = Repository<Muting>;
+export type RenoteMutingsRepository = Repository<RenoteMuting>;
 export type NotesRepository = Repository<Note>;
 export type NoteFavoritesRepository = Repository<NoteFavorite>;
 export type NoteReactionsRepository = Repository<NoteReaction>;
@@ -188,9 +185,6 @@ export type SigninsRepository = Repository<Signin>;
 export type SwSubscriptionsRepository = Repository<SwSubscription>;
 export type UsedUsernamesRepository = Repository<UsedUsername>;
 export type UsersRepository = Repository<User>;
-export type UserGroupsRepository = Repository<UserGroup>;
-export type UserGroupInvitationsRepository = Repository<UserGroupInvitation>;
-export type UserGroupJoiningsRepository = Repository<UserGroupJoining>;
 export type UserIpsRepository = Repository<UserIp>;
 export type UserKeypairsRepository = Repository<UserKeypair>;
 export type UserListsRepository = Repository<UserList>;

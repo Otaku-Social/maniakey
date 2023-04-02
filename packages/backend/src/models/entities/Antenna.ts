@@ -2,7 +2,6 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { id } from '../id.js';
 import { User } from './User.js';
 import { UserList } from './UserList.js';
-import { UserGroupJoining } from './UserGroupJoining.js';
 
 @Entity()
 export class Antenna {
@@ -13,6 +12,10 @@ export class Antenna {
 		comment: 'The created date of the Antenna.',
 	})
 	public createdAt: Date;
+
+	@Index()
+	@Column('timestamp with time zone')
+	public lastUsedAt: Date;
 
 	@Index()
 	@Column({
@@ -33,8 +36,8 @@ export class Antenna {
 	})
 	public name: string;
 
-	@Column('enum', { enum: ['home', 'all', 'users', 'list', 'group'] })
-	public src: 'home' | 'all' | 'users' | 'list' | 'group';
+	@Column('enum', { enum: ['home', 'all', 'users', 'list'] })
+	public src: 'home' | 'all' | 'users' | 'list';
 
 	@Column({
 		...id(),
@@ -47,18 +50,6 @@ export class Antenna {
 	})
 	@JoinColumn()
 	public userList: UserList | null;
-
-	@Column({
-		...id(),
-		nullable: true,
-	})
-	public userGroupJoiningId: UserGroupJoining['id'] | null;
-
-	@ManyToOne(type => UserGroupJoining, {
-		onDelete: 'CASCADE',
-	})
-	@JoinColumn()
-	public userGroupJoining: UserGroupJoining | null;
 
 	@Column('varchar', {
 		length: 1024, array: true,
@@ -96,4 +87,10 @@ export class Antenna {
 
 	@Column('boolean')
 	public notify: boolean;
+
+	@Index()
+	@Column('boolean', {
+		default: true,
+	})
+	public isActive: boolean;
 }

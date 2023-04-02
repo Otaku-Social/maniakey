@@ -47,14 +47,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			for (const emoji of emojis) {
 				await this.emojisRepository.delete(emoji.id);
-				await this.db.queryResultCache!.remove(['meta_emojis']);
+				await this.db.queryResultCache?.remove(['meta_emojis']);
 				this.moderationLogService.insertModerationLog(me, 'deleteEmoji', {
 					emoji: emoji,
 				});
 			}
 
 			this.globalEventService.publishBroadcastStream('emojiDeleted', {
-				emojis: await this.emojiEntityService.packMany(emojis),
+				emojis: await this.emojiEntityService.packDetailedMany(emojis),
 			});
 		});
 	}

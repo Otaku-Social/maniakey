@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
-import { DI } from '../di-symbols.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
 import { AntennaService } from './AntennaService.js';
 import { AppLockService } from './AppLockService.js';
 import { AchievementService } from './AchievementService.js';
 import { CaptchaService } from './CaptchaService.js';
-import { CreateNotificationService } from './CreateNotificationService.js';
 import { CreateSystemUserService } from './CreateSystemUserService.js';
 import { CustomEmojiService } from './CustomEmojiService.js';
 import { DeleteAccountService } from './DeleteAccountService.js';
@@ -22,7 +20,6 @@ import { IdService } from './IdService.js';
 import { ImageProcessingService } from './ImageProcessingService.js';
 import { InstanceActorService } from './InstanceActorService.js';
 import { InternalStorageService } from './InternalStorageService.js';
-import { MessagingService } from './MessagingService.js';
 import { MetaService } from './MetaService.js';
 import { MfmService } from './MfmService.js';
 import { ModerationLogService } from './ModerationLogService.js';
@@ -82,9 +79,9 @@ import { GalleryLikeEntityService } from './entities/GalleryLikeEntityService.js
 import { GalleryPostEntityService } from './entities/GalleryPostEntityService.js';
 import { HashtagEntityService } from './entities/HashtagEntityService.js';
 import { InstanceEntityService } from './entities/InstanceEntityService.js';
-import { MessagingMessageEntityService } from './entities/MessagingMessageEntityService.js';
 import { ModerationLogEntityService } from './entities/ModerationLogEntityService.js';
 import { MutingEntityService } from './entities/MutingEntityService.js';
+import { RenoteMutingEntityService } from './entities/RenoteMutingEntityService.js';
 import { NoteEntityService } from './entities/NoteEntityService.js';
 import { NoteFavoriteEntityService } from './entities/NoteFavoriteEntityService.js';
 import { NoteReactionEntityService } from './entities/NoteReactionEntityService.js';
@@ -93,8 +90,6 @@ import { PageEntityService } from './entities/PageEntityService.js';
 import { PageLikeEntityService } from './entities/PageLikeEntityService.js';
 import { SigninEntityService } from './entities/SigninEntityService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
-import { UserGroupEntityService } from './entities/UserGroupEntityService.js';
-import { UserGroupInvitationEntityService } from './entities/UserGroupInvitationEntityService.js';
 import { UserListEntityService } from './entities/UserListEntityService.js';
 import { FlashEntityService } from './entities/FlashEntityService.js';
 import { FlashLikeEntityService } from './entities/FlashLikeEntityService.js';
@@ -130,7 +125,6 @@ const $AntennaService: Provider = { provide: 'AntennaService', useExisting: Ante
 const $AppLockService: Provider = { provide: 'AppLockService', useExisting: AppLockService };
 const $AchievementService: Provider = { provide: 'AchievementService', useExisting: AchievementService };
 const $CaptchaService: Provider = { provide: 'CaptchaService', useExisting: CaptchaService };
-const $CreateNotificationService: Provider = { provide: 'CreateNotificationService', useExisting: CreateNotificationService };
 const $CreateSystemUserService: Provider = { provide: 'CreateSystemUserService', useExisting: CreateSystemUserService };
 const $CustomEmojiService: Provider = { provide: 'CustomEmojiService', useExisting: CustomEmojiService };
 const $DeleteAccountService: Provider = { provide: 'DeleteAccountService', useExisting: DeleteAccountService };
@@ -146,7 +140,6 @@ const $IdService: Provider = { provide: 'IdService', useExisting: IdService };
 const $ImageProcessingService: Provider = { provide: 'ImageProcessingService', useExisting: ImageProcessingService };
 const $InstanceActorService: Provider = { provide: 'InstanceActorService', useExisting: InstanceActorService };
 const $InternalStorageService: Provider = { provide: 'InternalStorageService', useExisting: InternalStorageService };
-const $MessagingService: Provider = { provide: 'MessagingService', useExisting: MessagingService };
 const $MetaService: Provider = { provide: 'MetaService', useExisting: MetaService };
 const $MfmService: Provider = { provide: 'MfmService', useExisting: MfmService };
 const $ModerationLogService: Provider = { provide: 'ModerationLogService', useExisting: ModerationLogService };
@@ -207,9 +200,9 @@ const $GalleryLikeEntityService: Provider = { provide: 'GalleryLikeEntityService
 const $GalleryPostEntityService: Provider = { provide: 'GalleryPostEntityService', useExisting: GalleryPostEntityService };
 const $HashtagEntityService: Provider = { provide: 'HashtagEntityService', useExisting: HashtagEntityService };
 const $InstanceEntityService: Provider = { provide: 'InstanceEntityService', useExisting: InstanceEntityService };
-const $MessagingMessageEntityService: Provider = { provide: 'MessagingMessageEntityService', useExisting: MessagingMessageEntityService };
 const $ModerationLogEntityService: Provider = { provide: 'ModerationLogEntityService', useExisting: ModerationLogEntityService };
 const $MutingEntityService: Provider = { provide: 'MutingEntityService', useExisting: MutingEntityService };
+const $RenoteMutingEntityService: Provider = { provide: 'RenoteMutingEntityService', useExisting: RenoteMutingEntityService };
 const $NoteEntityService: Provider = { provide: 'NoteEntityService', useExisting: NoteEntityService };
 const $NoteFavoriteEntityService: Provider = { provide: 'NoteFavoriteEntityService', useExisting: NoteFavoriteEntityService };
 const $NoteReactionEntityService: Provider = { provide: 'NoteReactionEntityService', useExisting: NoteReactionEntityService };
@@ -218,8 +211,6 @@ const $PageEntityService: Provider = { provide: 'PageEntityService', useExisting
 const $PageLikeEntityService: Provider = { provide: 'PageLikeEntityService', useExisting: PageLikeEntityService };
 const $SigninEntityService: Provider = { provide: 'SigninEntityService', useExisting: SigninEntityService };
 const $UserEntityService: Provider = { provide: 'UserEntityService', useExisting: UserEntityService };
-const $UserGroupEntityService: Provider = { provide: 'UserGroupEntityService', useExisting: UserGroupEntityService };
-const $UserGroupInvitationEntityService: Provider = { provide: 'UserGroupInvitationEntityService', useExisting: UserGroupInvitationEntityService };
 const $UserListEntityService: Provider = { provide: 'UserListEntityService', useExisting: UserListEntityService };
 const $FlashEntityService: Provider = { provide: 'FlashEntityService', useExisting: FlashEntityService };
 const $FlashLikeEntityService: Provider = { provide: 'FlashLikeEntityService', useExisting: FlashLikeEntityService };
@@ -257,7 +248,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		AppLockService,
 		AchievementService,
 		CaptchaService,
-		CreateNotificationService,
 		CreateSystemUserService,
 		CustomEmojiService,
 		DeleteAccountService,
@@ -273,7 +263,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ImageProcessingService,
 		InstanceActorService,
 		InternalStorageService,
-		MessagingService,
 		MetaService,
 		MfmService,
 		ModerationLogService,
@@ -333,9 +322,9 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		GalleryPostEntityService,
 		HashtagEntityService,
 		InstanceEntityService,
-		MessagingMessageEntityService,
 		ModerationLogEntityService,
 		MutingEntityService,
+		RenoteMutingEntityService,
 		NoteEntityService,
 		NoteFavoriteEntityService,
 		NoteReactionEntityService,
@@ -344,8 +333,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PageLikeEntityService,
 		SigninEntityService,
 		UserEntityService,
-		UserGroupEntityService,
-		UserGroupInvitationEntityService,
 		UserListEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
@@ -378,7 +365,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$AppLockService,
 		$AchievementService,
 		$CaptchaService,
-		$CreateNotificationService,
 		$CreateSystemUserService,
 		$CustomEmojiService,
 		$DeleteAccountService,
@@ -394,7 +380,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ImageProcessingService,
 		$InstanceActorService,
 		$InternalStorageService,
-		$MessagingService,
 		$MetaService,
 		$MfmService,
 		$ModerationLogService,
@@ -454,9 +439,9 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$GalleryPostEntityService,
 		$HashtagEntityService,
 		$InstanceEntityService,
-		$MessagingMessageEntityService,
 		$ModerationLogEntityService,
 		$MutingEntityService,
+		$RenoteMutingEntityService,
 		$NoteEntityService,
 		$NoteFavoriteEntityService,
 		$NoteReactionEntityService,
@@ -465,8 +450,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PageLikeEntityService,
 		$SigninEntityService,
 		$UserEntityService,
-		$UserGroupEntityService,
-		$UserGroupInvitationEntityService,
 		$UserListEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,
@@ -500,7 +483,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		AppLockService,
 		AchievementService,
 		CaptchaService,
-		CreateNotificationService,
 		CreateSystemUserService,
 		CustomEmojiService,
 		DeleteAccountService,
@@ -516,7 +498,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ImageProcessingService,
 		InstanceActorService,
 		InternalStorageService,
-		MessagingService,
 		MetaService,
 		MfmService,
 		ModerationLogService,
@@ -575,9 +556,9 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		GalleryPostEntityService,
 		HashtagEntityService,
 		InstanceEntityService,
-		MessagingMessageEntityService,
 		ModerationLogEntityService,
 		MutingEntityService,
+		RenoteMutingEntityService,
 		NoteEntityService,
 		NoteFavoriteEntityService,
 		NoteReactionEntityService,
@@ -586,8 +567,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PageLikeEntityService,
 		SigninEntityService,
 		UserEntityService,
-		UserGroupEntityService,
-		UserGroupInvitationEntityService,
 		UserListEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
@@ -620,7 +599,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$AppLockService,
 		$AchievementService,
 		$CaptchaService,
-		$CreateNotificationService,
 		$CreateSystemUserService,
 		$CustomEmojiService,
 		$DeleteAccountService,
@@ -636,7 +614,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ImageProcessingService,
 		$InstanceActorService,
 		$InternalStorageService,
-		$MessagingService,
 		$MetaService,
 		$MfmService,
 		$ModerationLogService,
@@ -695,9 +672,9 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$GalleryPostEntityService,
 		$HashtagEntityService,
 		$InstanceEntityService,
-		$MessagingMessageEntityService,
 		$ModerationLogEntityService,
 		$MutingEntityService,
+		$RenoteMutingEntityService,
 		$NoteEntityService,
 		$NoteFavoriteEntityService,
 		$NoteReactionEntityService,
@@ -706,8 +683,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PageLikeEntityService,
 		$SigninEntityService,
 		$UserEntityService,
-		$UserGroupEntityService,
-		$UserGroupInvitationEntityService,
 		$UserListEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,
@@ -733,4 +708,4 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		//#endregion
 	],
 })
-export class CoreModule {}
+export class CoreModule { }

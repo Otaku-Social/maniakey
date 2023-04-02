@@ -8,14 +8,11 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { onMounted, nextTick } from 'vue';
 import { Chart } from 'chart.js';
-import tinycolor from 'tinycolor2';
-import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { chartVLine } from '@/scripts/chart-vline';
 import { alpha } from '@/scripts/color';
 import { initChart } from '@/scripts/init-chart';
 
@@ -39,9 +36,11 @@ async function renderChart() {
 	const wide = rootEl.offsetWidth > 600;
 	const narrow = rootEl.offsetWidth < 400;
 
-	const maxDays = wide ? 15 : narrow ? 5 : 10;
+	const maxDays = wide ? 10 : narrow ? 5 : 7;
 
-	const raw = await os.api('retention', { });
+	let raw = await os.api('retention', { });
+
+	raw = raw.slice(0, maxDays);
 
 	const data = [];
 	for (const record of raw) {
@@ -63,10 +62,9 @@ async function renderChart() {
 	const color = defaultStore.state.darkMode ? '#b4e900' : '#86b300';
 
 	// 視覚上の分かりやすさのため上から最も大きい3つの値の平均を最大値とする
-	//const max = raw.readWrite.slice().sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 3;
-	const max = 4;
+	const max = raw.map(x => x.users).slice().sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 3;
 
-	const marginEachCell = 6;
+	const marginEachCell = 12;
 
 	chartInstance = new Chart(chartEl, {
 		type: 'matrix',

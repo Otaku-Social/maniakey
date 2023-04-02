@@ -3,7 +3,7 @@ import { IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -18,7 +18,7 @@ interface IFollowersRecipe extends IRecipe {
 
 interface IDirectRecipe extends IRecipe {
 	type: 'Direct';
-	to: IRemoteUser;
+	to: RemoteUser;
 }
 
 const isFollowers = (recipe: any): recipe is IFollowersRecipe =>
@@ -50,7 +50,7 @@ export class ApDeliverManagerService {
 	 * @param from Followee
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: ILocalUser['id']; host: null; }, activity: any) {
+	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: any) {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -68,7 +68,7 @@ export class ApDeliverManagerService {
 	 * @param to Target user
 	 */
 	@bindThis
-	public async deliverToUser(actor: { id: ILocalUser['id']; host: null; }, activity: any, to: IRemoteUser) {
+	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: any, to: RemoteUser) {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -132,7 +132,7 @@ class DeliverManager {
 	 * @param to To
 	 */
 	@bindThis
-	public addDirectRecipe(to: IRemoteUser) {
+	public addDirectRecipe(to: RemoteUser) {
 		const recipe = {
 			type: 'Direct',
 			to,
@@ -157,7 +157,8 @@ class DeliverManager {
 	public async execute() {
 		if (!this.userEntityService.isLocalUser(this.actor)) return;
 
-		const inboxes = new Set<string>();
+		// The value flags whether it is shared or not.
+		const inboxes = new Map<string, boolean>();
 
 		/*
 		build inbox list
@@ -185,7 +186,7 @@ class DeliverManager {
 
 			for (const following of followers) {
 				const inbox = following.followerSharedInbox ?? following.followerInbox;
-				inboxes.add(inbox);
+				inboxes.set(inbox, following.followerSharedInbox === null);
 			}
 		}
 
@@ -197,11 +198,12 @@ class DeliverManager {
 			// check that they actually have an inbox
 			&& recipe.to.inbox != null,
 		)
-			.forEach(recipe => inboxes.add(recipe.to.inbox!));
+			.forEach(recipe => inboxes.set(recipe.to.inbox!, false));
 
 		// deliver
 		for (const inbox of inboxes) {
-			this.queueService.deliver(this.actor, this.activity, inbox);
+			// inbox[0]: inbox, inbox[1]: whether it is sharedInbox
+			this.queueService.deliver(this.actor, this.activity, inbox[0], inbox[1]);
 		}
 	}
 }
