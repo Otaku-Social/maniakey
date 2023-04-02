@@ -49,10 +49,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				aliases: ps.aliases,
 			});
 
-			await this.db.queryResultCache!.remove(['meta_emojis']);
+			await this.db.queryResultCache?.remove(['meta_emojis']);
 
 			this.globalEventService.publishBroadcastStream('emojiUpdated', {
-				emojis: await this.emojiEntityService.packMany(ps.ids),
+				emojis: await this.emojiEntityService.packDetailedMany(ps.ids),
 			});
 		});
 	}

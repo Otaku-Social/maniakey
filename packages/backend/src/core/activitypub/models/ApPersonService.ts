@@ -1,11 +1,11 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { CacheableUser, IRemoteUser } from '@/models/entities/User.js';
+import type { RemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
 import { truncate } from '@/misc/truncate.js';
 import type { UserCacheService } from '@/core/UserCacheService.js';
@@ -30,6 +30,7 @@ import { StatusError } from '@/misc/status-error.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { MetaService } from '@/core/MetaService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -39,7 +40,7 @@ import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { ApImageService } from './ApImageService.js';
-import type { IActor, IObject, IApPropertyValue } from '../type.js';
+import type { IActor, IObject } from '../type.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -50,6 +51,7 @@ export class ApPersonService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private idService: IdService;
 	private globalEventService: GlobalEventService;
+	private metaService: MetaService;
 	private federatedInstanceService: FederatedInstanceService;
 	private fetchInstanceMetadataService: FetchInstanceMetadataService;
 	private userCacheService: UserCacheService;
@@ -92,6 +94,7 @@ export class ApPersonService implements OnModuleInit {
 		//private userEntityService: UserEntityService,
 		//private idService: IdService,
 		//private globalEventService: GlobalEventService,
+		//private metaService: MetaService,
 		//private federatedInstanceService: FederatedInstanceService,
 		//private fetchInstanceMetadataService: FetchInstanceMetadataService,
 		//private userCacheService: UserCacheService,
@@ -112,6 +115,7 @@ export class ApPersonService implements OnModuleInit {
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.idService = this.moduleRef.get('IdService');
 		this.globalEventService = this.moduleRef.get('GlobalEventService');
+		this.metaService = this.moduleRef.get('MetaService');
 		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
 		this.fetchInstanceMetadataService = this.moduleRef.get('FetchInstanceMetadataService');
 		this.userCacheService = this.moduleRef.get('UserCacheService');
@@ -164,6 +168,9 @@ export class ApPersonService implements OnModuleInit {
 				throw new Error('invalid Actor: wrong name');
 			}
 			x.name = truncate(x.name, nameLength);
+		} else if (x.name === '') {
+			// Mastodon emits empty string when the name is not set.
+			x.name = undefined;
 		}
 		if (x.summary) {
 			if (!(typeof x.summary === 'string' && x.summary.length > 0)) {
@@ -197,7 +204,7 @@ export class ApPersonService implements OnModuleInit {
 	 * Misskeyに対象のPersonが登録されていればそれを返します。
 	 */
 	@bindThis
-	public async fetchPerson(uri: string, resolver?: Resolver): Promise<CacheableUser | null> {
+	public async fetchPerson(uri: string, resolver?: Resolver): Promise<User | null> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		const cached = this.userCacheService.uriPersonCache.get(uri);
@@ -259,7 +266,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		// Create user
-		let user: IRemoteUser;
+		let user: RemoteUser;
 		try {
 		// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
@@ -284,7 +291,7 @@ export class ApPersonService implements OnModuleInit {
 					isBot,
 					isCat: (person as any).isCat === true,
 					showTimelineReplies: false,
-				})) as IRemoteUser;
+				})) as RemoteUser;
 
 				await transactionalEntityManager.save(new UserProfile({
 					userId: user.id,
@@ -313,7 +320,7 @@ export class ApPersonService implements OnModuleInit {
 				});
 
 				if (u) {
-					user = u as IRemoteUser;
+					user = u as RemoteUser;
 				} else {
 					throw new Error('already registered');
 				}
@@ -324,10 +331,12 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		// Register host
-		this.federatedInstanceService.fetch(host).then(i => {
+		this.federatedInstanceService.fetch(host).then(async i => {
 			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
-			this.instanceChart.newUser(i.host);
 			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
+			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+				this.instanceChart.newUser(i.host);
+			}
 		});
 
 		this.usersChart.update(user!, true);
@@ -392,7 +401,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		//#region このサーバーに既に登録されているか
-		const exist = await this.usersRepository.findOneBy({ uri }) as IRemoteUser;
+		const exist = await this.usersRepository.findOneBy({ uri }) as RemoteUser;
 
 		if (exist == null) {
 			return;
@@ -500,7 +509,7 @@ export class ApPersonService implements OnModuleInit {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolvePerson(uri: string, resolver?: Resolver): Promise<CacheableUser> {
+	public async resolvePerson(uri: string, resolver?: Resolver): Promise<User> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		//#region このサーバーに既に登録されていたらそれを返す

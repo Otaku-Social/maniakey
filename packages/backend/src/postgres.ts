@@ -21,6 +21,7 @@ import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
 import { ChannelNotePining } from '@/models/entities/ChannelNotePining.js';
 import { Clip } from '@/models/entities/Clip.js';
 import { ClipNote } from '@/models/entities/ClipNote.js';
+import { ClipFavorite } from '@/models/entities/ClipFavorite.js';
 import { DriveFile } from '@/models/entities/DriveFile.js';
 import { DriveFolder } from '@/models/entities/DriveFolder.js';
 import { Emoji } from '@/models/entities/Emoji.js';
@@ -30,11 +31,11 @@ import { GalleryLike } from '@/models/entities/GalleryLike.js';
 import { GalleryPost } from '@/models/entities/GalleryPost.js';
 import { Hashtag } from '@/models/entities/Hashtag.js';
 import { Instance } from '@/models/entities/Instance.js';
-import { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import { Meta } from '@/models/entities/Meta.js';
 import { ModerationLog } from '@/models/entities/ModerationLog.js';
 import { MutedNote } from '@/models/entities/MutedNote.js';
 import { Muting } from '@/models/entities/Muting.js';
+import { RenoteMuting } from '@/models/entities/RenoteMuting.js';
 import { Note } from '@/models/entities/Note.js';
 import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
 import { NoteReaction } from '@/models/entities/NoteReaction.js';
@@ -55,9 +56,6 @@ import { Signin } from '@/models/entities/Signin.js';
 import { SwSubscription } from '@/models/entities/SwSubscription.js';
 import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import { User } from '@/models/entities/User.js';
-import { UserGroup } from '@/models/entities/UserGroup.js';
-import { UserGroupInvitation } from '@/models/entities/UserGroupInvitation.js';
-import { UserGroupJoining } from '@/models/entities/UserGroupJoining.js';
 import { UserIp } from '@/models/entities/UserIp.js';
 import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UserList } from '@/models/entities/UserList.js';
@@ -78,7 +76,6 @@ import { FlashLike } from '@/models/entities/FlashLike.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import { envOption } from './env.js';
 
 export const dbLogger = new MisskeyLogger('db');
 
@@ -137,9 +134,6 @@ export const entities = [
 	UserPublickey,
 	UserList,
 	UserListJoining,
-	UserGroup,
-	UserGroupJoining,
-	UserGroupInvitation,
 	UserNotePining,
 	UserSecurityKey,
 	UsedUsername,
@@ -147,6 +141,7 @@ export const entities = [
 	Following,
 	FollowRequest,
 	Muting,
+	RenoteMuting,
 	Blocking,
 	Note,
 	NoteFavorite,
@@ -167,11 +162,11 @@ export const entities = [
 	SwSubscription,
 	AbuseUserReport,
 	RegistrationTicket,
-	MessagingMessage,
 	Signin,
 	ModerationLog,
 	Clip,
 	ClipNote,
+	ClipFavorite,
 	Antenna,
 	AntennaNote,
 	PromoNote,

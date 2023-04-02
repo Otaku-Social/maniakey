@@ -1,6 +1,6 @@
 import { Brackets, In } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
-import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
+import type { User, LocalUser, RemoteUser } from '@/models/entities/User.js';
 import type { Note, IMentionedRemoteUsers } from '@/models/entities/Note.js';
 import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/index.js';
 import { RelayService } from '@/core/RelayService.js';
@@ -16,6 +16,7 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { MetaService } from '@/core/MetaService.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -39,6 +40,7 @@ export class NoteDeleteService {
 		private federatedInstanceService: FederatedInstanceService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
+		private metaService: MetaService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
 		private instanceChart: InstanceChart,
@@ -78,7 +80,7 @@ export class NoteDeleteService {
 					});
 				}
 
-				const content = this.apRendererService.renderActivity(renote
+				const content = this.apRendererService.addContext(renote
 					? this.apRendererService.renderUndo(this.apRendererService.renderAnnounce(renote.uri ?? `${this.config.url}/notes/${renote.id}`, note), user)
 					: this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${note.id}`), user));
 
@@ -90,19 +92,24 @@ export class NoteDeleteService {
 			for (const cascadingNote of cascadingNotes) {
 				if (!cascadingNote.user) continue;
 				if (!this.userEntityService.isLocalUser(cascadingNote.user)) continue;
-				const content = this.apRendererService.renderActivity(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
+				const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
 				this.deliverToConcerned(cascadingNote.user, cascadingNote, content);
 			}
 			//#endregion
 
-			// 統計を更新
+			const meta = await this.metaService.fetch();
+
 			this.notesChart.update(note, false);
-			this.perUserNotesChart.update(user, note, false);
+			if (meta.enableChartsForRemoteUser || (user.host == null)) {
+				this.perUserNotesChart.update(user, note, false);
+			}
 
 			if (this.userEntityService.isRemoteUser(user)) {
-				this.federatedInstanceService.fetch(user.host).then(i => {
+				this.federatedInstanceService.fetch(user.host).then(async i => {
 					this.instancesRepository.decrement({ id: i.id }, 'notesCount', 1);
-					this.instanceChart.updateNote(i.host, note, false);
+					if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+						this.instanceChart.updateNote(i.host, note, false);
+					}
 				});
 			}
 		}
@@ -159,11 +166,11 @@ export class NoteDeleteService {
 
 		return await this.usersRepository.find({
 			where,
-		}) as IRemoteUser[];
+		}) as RemoteUser[];
 	}
 
 	@bindThis
-	private async deliverToConcerned(user: { id: ILocalUser['id']; host: null; }, note: Note, content: any) {
+	private async deliverToConcerned(user: { id: LocalUser['id']; host: null; }, note: Note, content: any) {
 		this.apDeliverManagerService.deliverToFollowers(user, content);
 		this.relayService.deliverToRelays(user, content);
 		const remoteUsers = await this.getMentionedRemoteUsers(note);

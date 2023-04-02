@@ -1,7 +1,6 @@
-import { Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
-import type { IRemoteUser } from '@/models/entities/User.js';
+import type { RemoteUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -9,7 +8,6 @@ import { QueueService } from '@/core/QueueService.js';
 import { PollService } from '@/core/PollService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { DI } from '@/di-symbols.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { ApiError } from '../../../error.js';
@@ -90,7 +88,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private pollService: PollService,
 		private apRendererService: ApRendererService,
 		private globalEventService: GlobalEventService,
-		private createNotificationService: CreateNotificationService,
 		private userBlockingService: UserBlockingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -160,9 +157,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// リモート投票の場合リプライ送信
 			if (note.userHost != null) {
-				const pollOwner = await this.usersRepository.findOneByOrFail({ id: note.userId }) as IRemoteUser;
+				const pollOwner = await this.usersRepository.findOneByOrFail({ id: note.userId }) as RemoteUser;
 
-				this.queueService.deliver(me, this.apRendererService.renderActivity(await this.apRendererService.renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox);
+				this.queueService.deliver(me, this.apRendererService.addContext(await this.apRendererService.renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox, false);
 			}
 
 			// リモートフォロワーにUpdate配信

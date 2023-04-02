@@ -7,7 +7,7 @@
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 					<div class="baaadecd">
 						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-						<MkSuperMenu :def="menuDef" :grid="currentPage?.route.name == null"></MkSuperMenu>
+						<MkSuperMenu :def="menuDef" :grid="narrow"></MkSuperMenu>
 					</div>
 				</div>
 				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
@@ -22,16 +22,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onActivated, onMounted, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
+import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
-import { scroll } from '@/scripts/scroll';
 import { signout, $i } from '@/account';
 import { unisonReload } from '@/scripts/unison-reload';
 import { instance } from '@/instance';
 import { useRouter } from '@/router';
-import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import * as os from '@/os';
 import { miLocalStorage } from '@/local-storage';
 import { fetchCustomEmojis } from '@/custom-emojis';
@@ -141,6 +140,11 @@ const menuDef = computed(() => [{
 		to: '/settings/import-export',
 		active: currentPage?.route.name === 'import-export',
 	}, {
+		icon: 'ti ti-badges',
+		text: i18n.ts.roles,
+		to: '/settings/roles',
+		active: currentPage?.route.name === 'roles',
+	}, {
 		icon: 'ti ti-planet-off',
 		text: i18n.ts.instanceMute,
 		to: '/settings/instance-mute',
@@ -187,7 +191,7 @@ const menuDef = computed(() => [{
 			miLocalStorage.removeItem('theme');
 			miLocalStorage.removeItem('emojis');
 			miLocalStorage.removeItem('lastEmojisFetchedAt');
-			await fetchCustomEmojis();
+			await fetchCustomEmojis(true);
 			unisonReload();
 		},
 	}, {
@@ -229,6 +233,12 @@ onActivated(() => {
 
 onUnmounted(() => {
 	ro.disconnect();
+});
+
+watch(router.currentRef, (to) => {
+	if (to.route.name === "settings" && to.child?.route.name == null && !narrow) {
+		router.replace('/settings/profile');
+	}
 });
 
 const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));

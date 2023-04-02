@@ -4,9 +4,9 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { EmojisRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { ApiError } from '../../../error.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -54,10 +54,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			await this.emojisRepository.delete(emoji.id);
 
-			await this.db.queryResultCache!.remove(['meta_emojis']);
+			await this.db.queryResultCache?.remove(['meta_emojis']);
 
 			this.globalEventService.publishBroadcastStream('emojiDeleted', {
-				emojis: [ await this.emojiEntityService.pack(emoji) ],
+				emojis: [await this.emojiEntityService.packDetailed(emoji)],
 			});
 
 			this.moderationLogService.insertModerationLog(me, 'deleteEmoji', {

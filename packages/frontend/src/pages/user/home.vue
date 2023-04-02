@@ -7,7 +7,7 @@
 			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
 			<div class="profile _gaps">
-				<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
+				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
 
 				<div :key="user.id" class="main _panel">
 					<div class="banner-container" :style="style">
@@ -100,7 +100,7 @@
 					<XPhotos :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
-				<XNotes :no-gap="true" :pagination="pagination"/>
+				<MkNotes v-if="!disableNotes" :class="$style.tl" :no-gap="true" :pagination="pagination"/>
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
@@ -112,35 +112,35 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted } from 'vue';
 import calcAge from 's-age';
 import * as misskey from 'misskey-js';
 import XNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import MkContainer from '@/components/MkContainer.vue';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
-import MkTab from '@/components/MkTab.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { getScrollPosition } from '@/scripts/scroll';
 import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '@/filters/number';
-import { userPage, acct as getAcct } from '@/filters/user';
+import { userPage } from '@/filters/user';
 import * as os from '@/os';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
-import XNotes from '@/components/MkNotes.vue';
+import MkNotes from '@/components/MkNotes.vue';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
 
 const props = withDefaults(defineProps<{
 	user: misskey.entities.UserDetailed;
+	/** Test only; MkNotes currently causes problems in vitest */
+	disableNotes: boolean;
 }>(), {
+	disableNotes: false,
 });
 
 const router = useRouter();
@@ -355,6 +355,9 @@ onUnmounted(() => {
 				> .roles {
 					padding: 24px 24px 0 154px;
 					font-size: 0.95em;
+					display: flex;
+					flex-wrap: wrap;
+					gap: 8px;
 
 					> .role {
 						border: solid 1px var(--color, var(--divider));
@@ -496,7 +499,7 @@ onUnmounted(() => {
 
 				> .roles {
 					padding: 16px 16px 0 16px;
-					text-align: center;
+					justify-content: center;
 				}
 
 				> .description {
@@ -520,5 +523,13 @@ onUnmounted(() => {
 			}
 		}
 	}
+}
+</style>
+
+<style lang="scss" module>
+.tl {
+	background: var(--bg);
+    border-radius: var(--radius);
+    overflow: clip;
 }
 </style>

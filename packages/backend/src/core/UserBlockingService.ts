@@ -2,7 +2,7 @@
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import Redis from 'ioredis';
 import { IdService } from '@/core/IdService.js';
-import type { CacheableUser, User } from '@/models/entities/User.js';
+import type { User } from '@/models/entities/User.js';
 import type { Blocking } from '@/models/entities/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -15,7 +15,7 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { bindThis } from '@/decorators.js';
-import { Cache } from '@/misc/cache.js';
+import { KVCache } from '@/misc/cache.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class UserBlockingService implements OnApplicationShutdown {
 	private logger: Logger;
 
 	// キーがユーザーIDで、値がそのユーザーがブロックしているユーザーのIDのリストなキャッシュ
-	private blockingsByUserIdCache: Cache<User['id'][]>;
+	private blockingsByUserIdCache: KVCache<User['id'][]>;
 
 	constructor(
 		@Inject(DI.redisSubscriber)
@@ -58,7 +58,7 @@ export class UserBlockingService implements OnApplicationShutdown {
 	) {
 		this.logger = this.loggerService.getLogger('user-block');
 
-		this.blockingsByUserIdCache = new Cache<User['id'][]>(Infinity);
+		this.blockingsByUserIdCache = new KVCache<User['id'][]>(Infinity);
 
 		this.redisSubscriber.on('message', this.onMessage);
 	}
@@ -117,8 +117,8 @@ export class UserBlockingService implements OnApplicationShutdown {
 		});
 
 		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderBlock(blocking));
-			this.queueService.deliver(blocker, content, blockee.inbox);
+			const content = this.apRendererService.addContext(this.apRendererService.renderBlock(blocking));
+			this.queueService.deliver(blocker, content, blockee.inbox, false);
 		}
 	}
 
@@ -162,14 +162,14 @@ export class UserBlockingService implements OnApplicationShutdown {
 
 		// リモートにフォローリクエストをしていたらUndoFollow送信
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
-			this.queueService.deliver(follower, content, followee.inbox);
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
+			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 
 		// リモートからフォローリクエストを受けていたらReject送信
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, request.requestId!), followee));
-			this.queueService.deliver(followee, content, follower.inbox);
+			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, request.requestId!), followee));
+			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 	}
 
@@ -210,14 +210,14 @@ export class UserBlockingService implements OnApplicationShutdown {
 
 		// リモートにフォローをしていたらUndoFollow送信
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
-			this.queueService.deliver(follower, content, followee.inbox);
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
+			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 
 		// リモートからフォローをされていたらRejectFollow送信
 		if (this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee), followee));
-			this.queueService.deliver(followee, content, follower.inbox);
+			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee), followee));
+			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 	}
 
@@ -236,7 +236,7 @@ export class UserBlockingService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async unblock(blocker: CacheableUser, blockee: CacheableUser) {
+	public async unblock(blocker: User, blockee: User) {
 		const blocking = await this.blockingsRepository.findOneBy({
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
@@ -261,8 +261,8 @@ export class UserBlockingService implements OnApplicationShutdown {
 
 		// deliver if remote bloking
 		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderBlock(blocking), blocker));
-			this.queueService.deliver(blocker, content, blockee.inbox);
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderBlock(blocking), blocker));
+			this.queueService.deliver(blocker, content, blockee.inbox, false);
 		}
 	}
 

@@ -10,9 +10,9 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import * as Acct from '@/misc/acct.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserGroupJoiningsRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { MutingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
@@ -38,9 +38,6 @@ export class AntennaService implements OnApplicationShutdown {
 
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
-
-		@Inject(DI.userGroupJoiningsRepository)
-		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: UserListJoiningsRepository,
@@ -74,12 +71,14 @@ export class AntennaService implements OnApplicationShutdown {
 					this.antennas.push({
 						...body,
 						createdAt: new Date(body.createdAt),
+						lastUsedAt: new Date(body.lastUsedAt),
 					});
 					break;
 				case 'antennaUpdated':
 					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = {
 						...body,
 						createdAt: new Date(body.createdAt),
+						lastUsedAt: new Date(body.lastUsedAt),
 					};
 					break;
 				case 'antennaDeleted':
@@ -160,14 +159,6 @@ export class AntennaService implements OnApplicationShutdown {
 			})).map(x => x.userId);
 	
 			if (!listUsers.includes(note.userId)) return false;
-		} else if (antenna.src === 'group') {
-			const joining = await this.userGroupJoiningsRepository.findOneByOrFail({ id: antenna.userGroupJoiningId! });
-	
-			const groupUsers = (await this.userGroupJoiningsRepository.findBy({
-				userGroupId: joining.userGroupId,
-			})).map(x => x.userId);
-	
-			if (!groupUsers.includes(note.userId)) return false;
 		} else if (antenna.src === 'users') {
 			const accts = antenna.users.map(x => {
 				const { username, host } = Acct.parse(x);
@@ -182,13 +173,15 @@ export class AntennaService implements OnApplicationShutdown {
 			.filter(xs => xs.length > 0);
 	
 		if (keywords.length > 0) {
-			if (note.text == null) return false;
+			if (note.text == null && note.cw == null) return false;
+
+			const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
 	
 			const matched = keywords.some(and =>
 				and.every(keyword =>
 					antenna.caseSensitive
-						? note.text!.includes(keyword)
-						: note.text!.toLowerCase().includes(keyword.toLowerCase()),
+						? _text.includes(keyword)
+						: _text.toLowerCase().includes(keyword.toLowerCase()),
 				));
 	
 			if (!matched) return false;
@@ -200,13 +193,15 @@ export class AntennaService implements OnApplicationShutdown {
 			.filter(xs => xs.length > 0);
 	
 		if (excludeKeywords.length > 0) {
-			if (note.text == null) return false;
-	
+			if (note.text == null && note.cw == null) return false;
+
+			const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
+
 			const matched = excludeKeywords.some(and =>
 				and.every(keyword =>
 					antenna.caseSensitive
-						? note.text!.includes(keyword)
-						: note.text!.toLowerCase().includes(keyword.toLowerCase()),
+						? _text.includes(keyword)
+						: _text.toLowerCase().includes(keyword.toLowerCase()),
 				));
 	
 			if (matched) return false;
@@ -224,7 +219,9 @@ export class AntennaService implements OnApplicationShutdown {
 	@bindThis
 	public async getAntennas() {
 		if (!this.antennasFetched) {
-			this.antennas = await this.antennasRepository.find();
+			this.antennas = await this.antennasRepository.findBy({
+				isActive: true,
+			});
 			this.antennasFetched = true;
 		}
 	
