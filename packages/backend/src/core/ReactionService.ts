@@ -21,7 +21,7 @@ import { bindThis } from '@/decorators.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 
-const FALLBACK = '❤';
+const FALLBACK = '⭐';
 
 const legacies: Record<string, string> = {
 	'like': '👍',
