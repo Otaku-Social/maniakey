@@ -80,6 +80,23 @@ export const packedUserDetailedNotMeOnlySchema = {
 			format: 'uri',
 			nullable: true, optional: false,
 		},
+		movedToUri: {
+			type: 'string',
+			format: 'uri',
+			nullable: true,
+			optional: false,
+		},
+		alsoKnownAs: {
+			type: 'array',
+			nullable: true,
+			optional: false,
+			items: {
+				type: 'string',
+				format: 'id',
+				nullable: false,
+				optional: false,
+			},
+		},
 		createdAt: {
 			type: 'string',
 			nullable: false, optional: false,
@@ -139,6 +156,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 		fields: {
 			type: 'array',
 			nullable: false, optional: false,
+			maxItems: 16,
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
@@ -152,7 +170,6 @@ export const packedUserDetailedNotMeOnlySchema = {
 						nullable: false, optional: false,
 					},
 				},
-				maxLength: 4,
 			},
 		},
 		followersCount: {
@@ -246,6 +263,10 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: true,
 		},
+		memo: {
+			type: 'string',
+			nullable: false, optional: true,
+		},
 		//#endregion
 	},
 } as const;
@@ -289,7 +310,11 @@ export const packedMeDetailedOnlySchema = {
 		},
 		noCrawle: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
+		},
+		preventAiLearning: {
+			type: 'boolean',
+			nullable: false, optional: false,
 		},
 		isExplorable: {
 			type: 'boolean',
@@ -316,10 +341,6 @@ export const packedMeDetailedOnlySchema = {
 			nullable: false, optional: false,
 		},
 		hasUnreadAntenna: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		hasUnreadChannel: {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
