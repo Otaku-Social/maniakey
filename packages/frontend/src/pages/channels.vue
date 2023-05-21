@@ -81,10 +81,12 @@ onMounted(() => {
 });
 
 const allListPagination = {
-	endpoint: 'channels/search',
+	endpoint: 'channels/search' as const,
 	limit: 100,
-	query: '',
-	type: 'nameOnly',
+	params: {
+		query: '',
+		type: 'nameOnly',
+	},
 };
 
 const featuredPagination = {
