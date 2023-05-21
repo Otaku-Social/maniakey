@@ -19,6 +19,11 @@
 				<MkChannelList :key="key" :pagination="channelPagination"/>
 			</MkFoldableSection>
 		</div>
+		<div v-if="tab === 'allList'">
+			<MkPagination v-slot="{items}" :pagination="allListPagination">
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+			</MkPagination>
+		</div>
 		<div v-if="tab === 'featured'">
 			<MkPagination v-slot="{items}" :pagination="featuredPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
@@ -75,6 +80,15 @@ onMounted(() => {
 	searchType = props.type ?? 'nameAndDescription';
 });
 
+const allListPagination = {
+	endpoint: 'channels/search' as const,
+	limit: 100,
+	params: {
+		query: '',
+		type: 'nameOnly',
+	},
+};
+
 const featuredPagination = {
 	endpoint: 'channels/featured' as const,
 	noPaging: true,
@@ -126,6 +140,10 @@ const headerTabs = $computed(() => [{
 	key: 'search',
 	title: i18n.ts.search,
 	icon: 'ti ti-search',
+}, {
+	key: 'allList',
+	title: i18n.ts._channel.allList,
+	icon: 'ti ti-menu',
 }, {
 	key: 'featured',
 	title: i18n.ts._channel.featured,
