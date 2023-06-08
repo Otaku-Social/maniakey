@@ -143,13 +143,12 @@ export const paramDef = {
 		isCat: { type: 'boolean' },
 		makeyHideLocalTimeline: { type: 'boolean' },
 		makeyHideFederatedTimeline: { type: 'boolean' },
-		showTimelineReplies: { type: 'boolean' },
 		injectFeaturedNote: { type: 'boolean' },
 		receiveAnnouncementEmail: { type: 'boolean' },
 		alwaysMarkNsfw: { type: 'boolean' },
 		autoSensitive: { type: 'boolean' },
 		ffVisibility: { type: 'string', enum: ['public', 'followers', 'private'] },
-		pinnedPageId: { type: 'string', format: 'misskey:id' },
+		pinnedPageId: { type: 'string', format: 'misskey:id', nullable: true },
 		mutedWords: { type: 'array' },
 		mutedInstances: { type: 'array', items: {
 			type: 'string',
@@ -247,8 +246,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 			if (typeof ps.preventAiLearning === 'boolean') profileUpdates.preventAiLearning = ps.preventAiLearning;
 			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
-			if (typeof ps.makeyHideLocalTimeline === 'boolean') updates.makeyHideLocalTimeline = ps.makeyHideLocalTimeline;
-			if (typeof ps.makeyHideFederatedTimeline === 'boolean') updates.makeyHideFederatedTimeline = ps.makeyHideFederatedTimeline;
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 			if (typeof ps.alwaysMarkNsfw === 'boolean') {
