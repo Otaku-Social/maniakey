@@ -12,7 +12,7 @@ export function useStream(): Misskey.Stream {
 		token: $i.token,
 	} : null));
 
-	window.setTimeout(heartbeat, 1000 * 60);
+	window.setTimeout(heartbeat, 1000 * 180);
 
 	return stream;
 }
@@ -21,5 +21,5 @@ function heartbeat(): void {
 	if (stream != null && document.visibilityState === 'visible') {
 		stream.heartbeat();
 	}
-	window.setTimeout(heartbeat, 1000 * 60);
+	window.setTimeout(heartbeat, 1000 * 180);
 }
