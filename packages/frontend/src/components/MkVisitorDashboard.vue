@@ -17,6 +17,7 @@
 				<MkInfo warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
 			</div>
 			<div class="_gaps_s" :class="$style.mainActions">
+				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="lookLocalTimeline()">{{ i18n.ts.letsLookAtTimeline }}</MkButton>
 				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
 				<MkButton :class="$style.mainAction" full rounded @click="exploreOtherServers()">{{ i18n.ts.exploreOtherServers }}</MkButton>
 				<MkButton :class="$style.mainAction" full rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
@@ -111,6 +112,11 @@ function showMenu(ev) {
 function exploreOtherServers() {
 	// TODO: 言語をよしなに
 	window.open('https://join.misskey.page/ja-JP/instances', '_blank');
+}
+
+function lookLocalTimeline() {
+	// TODO: 言語をよしなに
+	window.open('/timeline');
 }
 </script>
 
