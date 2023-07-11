@@ -115,8 +115,7 @@ function exploreOtherServers() {
 }
 
 function lookLocalTimeline() {
-	// TODO: 言語をよしなに
-	window.open('/timeline');
+	location.href = '/timeline';
 }
 </script>
 
