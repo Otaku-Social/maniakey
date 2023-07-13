@@ -57,7 +57,11 @@ let loading = $ref(true);
 
 const ok = async () => {
 	const promise = new Promise<misskey.entities.DriveFile>(async (res) => {
-		const croppedCanvas = await cropper?.getCropperSelection()?.$toCanvas();
+		const croppedCanvas = await cropper?.getCropperSelection({
+			imageSmoothingEnabled: true,
+			imageSmoothingQuality: 'high',
+		})?.$toCanvas();
+
 		croppedCanvas.toBlob(blob => {
 			const formData = new FormData();
 			formData.append('file', blob);
@@ -74,7 +78,7 @@ const ok = async () => {
 				.then(f => {
 					res(f);
 				});
-		});
+		}, "image/webp", 1.0);
 	});
 
 	os.promiseDialog(promise);
