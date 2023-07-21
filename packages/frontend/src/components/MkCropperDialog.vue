@@ -47,6 +47,7 @@ const emit = defineEmits<{
 const props = defineProps<{
 	file: misskey.entities.DriveFile;
 	aspectRatio: number;
+	uploadFolder?: string | null;
 }>();
 
 const imgUrl = getProxiedImageUrl(props.file.url, undefined, true);
@@ -62,11 +63,17 @@ const ok = async () => {
 			imageSmoothingQuality: 'high',
 		})?.$toCanvas();
 
-		croppedCanvas.toBlob(blob => {
+		croppedCanvas?.toBlob(blob => {
+			if (!blob) return;
 			const formData = new FormData();
 			formData.append('file', blob);
-			formData.append('i', $i.token);
-			if (defaultStore.state.uploadFolder) {
+			formData.append('name', `cropped_${props.file.name}`);
+			formData.append('isSensitive', props.file.isSensitive ? 'true' : 'false');
+			formData.append('comment', props.file.comment ?? 'null');
+			formData.append('i', $i!.token);
+			if (props.uploadFolder || props.uploadFolder === null) {
+				formData.append('folderId', props.uploadFolder ?? 'null');
+			} else if (defaultStore.state.uploadFolder) {
 				formData.append('folderId', defaultStore.state.uploadFolder);
 			}
 
@@ -78,7 +85,7 @@ const ok = async () => {
 				.then(f => {
 					res(f);
 				});
-		}, "image/webp", 1.0);
+		});
 	});
 
 	os.promiseDialog(promise);
@@ -86,12 +93,12 @@ const ok = async () => {
 	const f = await promise;
 
 	emit('ok', f);
-	dialogEl.close();
+	dialogEl!.close();
 };
 
 const cancel = () => {
 	emit('cancel');
-	dialogEl.close();
+	dialogEl!.close();
 };
 
 const onImageLoad = () => {
@@ -104,7 +111,7 @@ const onImageLoad = () => {
 };
 
 onMounted(() => {
-	cropper = new Cropper(imgEl, {
+	cropper = new Cropper(imgEl!, {
 	});
 
 	const computedStyle = getComputedStyle(document.documentElement);
@@ -116,13 +123,13 @@ onMounted(() => {
 	selection.outlined = true;
 
 	window.setTimeout(() => {
-		cropper.getCropperImage()!.$center('contain');
+		cropper!.getCropperImage()!.$center('contain');
 		selection.$center();
 	}, 100);
 
 	// モーダルオープンアニメーションが終わったあとで再度調整
 	window.setTimeout(() => {
-		cropper.getCropperImage()!.$center('contain');
+		cropper!.getCropperImage()!.$center('contain');
 		selection.$center();
 	}, 500);
 });
