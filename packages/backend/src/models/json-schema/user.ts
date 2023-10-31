@@ -55,10 +55,6 @@ export const packedUserLiteSchema = {
 			type: 'boolean',
 			nullable: false, optional: true,
 		},
-		makeyHideLocalTimeline: {
-			type: 'boolean',
-			nullable: false, optional: true,
-		},
 		makeyHideFederatedTimeline: {
 			type: 'boolean',
 			nullable: false, optional: true,

@@ -155,7 +155,6 @@ export const paramDef = {
 		preventAiLearning: { type: 'boolean' },
 		isBot: { type: 'boolean' },
 		isCat: { type: 'boolean' },
-		makeyHideLocalTimeline: { type: 'boolean' },
 		makeyHideFederatedTimeline: { type: 'boolean' },
 		injectFeaturedNote: { type: 'boolean' },
 		receiveAnnouncementEmail: { type: 'boolean' },
@@ -254,7 +253,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.hideOnlineStatus === 'boolean') updates.hideOnlineStatus = ps.hideOnlineStatus;
 			if (typeof ps.publicReactions === 'boolean') profileUpdates.publicReactions = ps.publicReactions;
 			if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
-			if (typeof ps.makeyHideLocalTimeline === 'boolean') updates.makeyHideLocalTimeline = ps.makeyHideLocalTimeline;
 			if (typeof ps.makeyHideFederatedTimeline === 'boolean') updates.makeyHideFederatedTimeline = ps.makeyHideFederatedTimeline;
 			if (typeof ps.showTimelineReplies === 'boolean') updates.showTimelineReplies = ps.showTimelineReplies;
 			if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;

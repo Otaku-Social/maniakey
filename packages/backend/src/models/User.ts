@@ -182,12 +182,6 @@ export class MiUser {
 
 	@Column('boolean', {
 		default: false,
-		comment: 'Hide local and social timeline.',
-	})
-	public makeyHideLocalTimeline: boolean;
-
-	@Column('boolean', {
-		default: false,
 		comment: 'Hide global timeline.',
 	})
 	public makeyHideFederatedTimeline: boolean;

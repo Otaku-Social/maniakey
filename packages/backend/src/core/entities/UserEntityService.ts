@@ -345,7 +345,6 @@ export class UserEntityService implements OnModuleInit {
 			avatarBlurhash: user.avatarBlurhash,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
-			makeyHideLocalTimeline: user.makeyHideLocalTimeline ?? falsy,
 			makeyHideFederatedTimeline: user.makeyHideFederatedTimeline ?? falsy,
 			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
 				name: instance.name,

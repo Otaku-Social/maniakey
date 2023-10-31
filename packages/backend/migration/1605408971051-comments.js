@@ -45,7 +45,6 @@ export class comments1605408971051 {
         await queryRunner.query(`COMMENT ON COLUMN "user"."isLocked" IS 'Whether the User is locked.'`);
         await queryRunner.query(`COMMENT ON COLUMN "user"."isBot" IS 'Whether the User is a bot.'`);
         await queryRunner.query(`COMMENT ON COLUMN "user"."isCat" IS 'Whether the User is a cat.'`);
-				await queryRunner.query(`COMMENT ON COLUMN "user"."makeyHideLocalTimeline" IS 'Hide local and social timeline.'`);
 				await queryRunner.query(`COMMENT ON COLUMN "user"."makeyHideFederatedTimeline" IS 'Hide global timeline.'`);
         await queryRunner.query(`COMMENT ON COLUMN "user"."isAdmin" IS 'Whether the User is the admin.'`);
         await queryRunner.query(`COMMENT ON COLUMN "user"."isModerator" IS 'Whether the User is a moderator.'`);
