@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-html="meta.description || i18n.ts.headlineMisskey"></div>
 			</div>
 			<div v-if="instance.disableRegistration" :class="$style.mainWarn">
-				<MkInfo warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
+				<MkInfo>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
 			</div>
 			<div class="_gaps_s" :class="$style.mainActions">
 				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>

@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<div class="_gaps_m">
 			<div v-if="instance.disableRegistration">
-				<MkInfo warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
+				<MkInfo>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
 			</div>
 
 			<div style="text-align: center;">
