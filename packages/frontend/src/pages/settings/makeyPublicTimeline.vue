@@ -7,20 +7,20 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { computed, ref } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
-let makeyHideFederatedTimeline = $ref($i.makeyHideFederatedTimeline);
+let makeyHideFederatedTimeline = ref($i.makeyHideFederatedTimeline);
 
 
 function save() {
 	os.api('i/update', {
-		makeyHideFederatedTimeline: !!makeyHideFederatedTimeline,
+		makeyHideFederatedTimeline: !!makeyHideFederatedTimeline.value,
 	});
 }
 
@@ -28,9 +28,9 @@ async function reloadPage() {
 	location.reload();
 }
 
-const headerActions = $computed(() => []);
+const headerActions = computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
 definePageMetadata({
 	title: '公開タイムライン',
