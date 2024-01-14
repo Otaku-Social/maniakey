@@ -10,9 +10,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_root">
 			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
+					<MkTab v-model="tab" class="tab">
+						<option :value="null">{{ i18n.ts.pages }}</option>
+						<option value="grid">{{ i18n.ts.grid }}</option>
+					</MkTab>
 					<div class="files">
-						<div v-for="file in post.files" :key="file.id" class="file">
+						<div v-if="tab === null" v-for="file in post.files" :key="file.id" class="file">
 							<img :src="file.url"/>
+						</div>
+						<div v-if="tab === 'grid'" >
+							<MkMediaList :mediaList="post.files"/>
 						</div>
 					</div>
 					<div class="body">
@@ -70,6 +77,8 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
+import MkTab from '@/components/MkTab.vue';
+import MkMediaList from '@/components/MkMediaList.vue';
 import { url } from '@/config.js';
 import { useRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
@@ -85,6 +94,7 @@ const props = defineProps<{
 	postId: string;
 }>();
 
+const tab = ref<string | null>(null);
 const post = ref<Misskey.entities.GalleryPost | null>(null);
 const error = ref<any>(null);
 const otherPostsPagination = {
@@ -277,6 +287,23 @@ definePageMetadata(computed(() => post.value ? {
 
 	> .post {
 
+	}
+}
+
+.tab {
+	padding: calc(var(--margin) / 2) 0;
+	background: var(--bg);
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	grid-gap: 6px;
+}
+
+@media (min-width: 720px) {
+	.grid {
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 	}
 }
 </style>
