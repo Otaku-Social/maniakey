@@ -10,9 +10,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_root">
 			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
+					<MkTab v-model="tab" class="tab">
+						<option :value="null">{{ i18n.ts.pages }}</option>
+						<option value="grid">{{ i18n.ts.grid }}</option>
+					</MkTab>
 					<div class="files">
-						<div v-for="file in post.files" :key="file.id" class="file">
+						<div v-if="tab === null" v-for="file in post.files" :key="file.id" class="file">
 							<img :src="file.url"/>
+						</div>
+						<div v-if="tab === 'grid'" >
+							<MkMediaList :mediaList="post.files"/>
 						</div>
 					</div>
 					<div class="body">
@@ -29,7 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div class="other">
 								<button v-if="$i && $i.id === post.user.id" v-tooltip="i18n.ts.edit" v-click-anime class="_button" @click="edit"><i class="ti ti-pencil ti-fw"></i></button>
 								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
-								<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
+								<button v-tooltip="i18n.ts.copyLink" v-click-anime class="_button" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
+								<button v-if="isSupportShare()" v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
 							</div>
 						</div>
 						<div class="user">
@@ -61,19 +69,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
+import MkTab from '@/components/MkTab.vue';
+import MkMediaList from '@/components/MkMediaList.vue';
 import { url } from '@/config.js';
 import { useRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
+import { isSupportShare } from '@/scripts/navigator.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const router = useRouter();
 
@@ -81,38 +94,44 @@ const props = defineProps<{
 	postId: string;
 }>();
 
-let post = $ref(null);
-let error = $ref(null);
+const tab = ref<string | null>(null);
+const post = ref<Misskey.entities.GalleryPost | null>(null);
+const error = ref<any>(null);
 const otherPostsPagination = {
 	endpoint: 'users/gallery/posts' as const,
 	limit: 6,
 	params: computed(() => ({
-		userId: post.user.id,
+		userId: post.value.user.id,
 	})),
 };
 
 function fetchPost() {
-	post = null;
+	post.value = null;
 	os.api('gallery/posts/show', {
 		postId: props.postId,
 	}).then(_post => {
-		post = _post;
+		post.value = _post;
 	}).catch(_error => {
-		error = _error;
+		error.value = _error;
 	});
+}
+
+function copyLink() {
+	copyToClipboard(`${url}/gallery/${post.value.id}`);
+	os.success();
 }
 
 function share() {
 	navigator.share({
-		title: post.title,
-		text: post.description,
-		url: `${url}/gallery/${post.id}`,
+		title: post.value.title,
+		text: post.value.description,
+		url: `${url}/gallery/${post.value.id}`,
 	});
 }
 
 function shareWithNote() {
 	os.post({
-		initialText: `${post.title} ${url}/gallery/${post.id}`,
+		initialText: `${post.value.title} ${url}/gallery/${post.value.id}`,
 	});
 }
 
@@ -120,8 +139,8 @@ function like() {
 	os.apiWithDialog('gallery/posts/like', {
 		postId: props.postId,
 	}).then(() => {
-		post.isLiked = true;
-		post.likedCount++;
+		post.value.isLiked = true;
+		post.value.likedCount++;
 	});
 }
 
@@ -134,28 +153,28 @@ async function unlike() {
 	os.apiWithDialog('gallery/posts/unlike', {
 		postId: props.postId,
 	}).then(() => {
-		post.isLiked = false;
-		post.likedCount--;
+		post.value.isLiked = false;
+		post.value.likedCount--;
 	});
 }
 
 function edit() {
-	router.push(`/gallery/${post.id}/edit`);
+	router.push(`/gallery/${post.value.id}/edit`);
 }
 
 watch(() => props.postId, fetchPost, { immediate: true });
 
-const headerActions = $computed(() => [{
+const headerActions = computed(() => [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.edit,
 	handler: edit,
 }]);
 
-const headerTabs = $computed(() => []);
+const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => post ? {
-	title: post.title,
-	avatar: post.user,
+definePageMetadata(computed(() => post.value ? {
+	title: post.value.title,
+	avatar: post.value.user,
 } : null));
 </script>
 
@@ -268,6 +287,23 @@ definePageMetadata(computed(() => post ? {
 
 	> .post {
 
+	}
+}
+
+.tab {
+	padding: calc(var(--margin) / 2) 0;
+	background: var(--bg);
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	grid-gap: 6px;
+}
+
+@media (min-width: 720px) {
+	.grid {
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 	}
 }
 </style>
