@@ -21,6 +21,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #key>{{ i18n.ts.inUse }}</template>
 					<template #value>{{ bytes(usage, 1) }}</template>
 				</MkKeyValue>
+        <MkKeyValue>
+          <template #key>{{ i18n.ts.free }}</template>
+          <template #value>{{ bytes(capacity - usage, 1) }}</template>
+        </MkKeyValue>
 			</FormSplit>
 		</div>
 	</FormSection>
