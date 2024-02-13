@@ -30,7 +30,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navCurrent]">{{ folder.name }}</span>
 		</div>
-		<button class="_button" :class="$style.navMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
+		<div :class="$style.navMenu">
+			<MkA style="padding-right: 10px" :to="`/settings/drive`">
+				{{ i18n.ts.free }}: {{ bytes( capacity - usage, 1) }}/{{ bytes(capacity, 1) }}
+			</MkA>
+			<button class="_button" @click="showMenu"><i class="ti ti-dots"></i></button>
+		</div>
 	</nav>
 	<div
 		ref="main"
@@ -107,6 +112,8 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { uploadFile, uploads } from '@/scripts/upload.js';
 import { claimAchievement } from '@/scripts/achievements.js';
+import bytes from "@/filters/bytes.js";
+import MkA from "@/components/global/MkA.vue";
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -155,6 +162,15 @@ const ilFilesObserver = new IntersectionObserver(
 );
 
 watch(folder, () => emit('cd', folder.value));
+
+// ドライブ情報表示
+const usage = ref<number | null>(null);
+const capacity = ref<number | null>(null);
+
+os.api('drive').then(info => {
+	capacity.value = info.capacity;
+	usage.value = info.usage;
+});
 
 function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
 	addFile(file, true);
@@ -743,6 +759,9 @@ onBeforeUnmount(() => {
 }
 
 .navMenu {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	margin-left: auto;
 	padding: 0 12px;
 }
