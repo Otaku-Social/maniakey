@@ -3,26 +3,32 @@ SPDX-FileCopyrightText: syuilo and other misskey contributors
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
+<!-- TODO: 画像以外のファイルは後で考慮 -->
 <template>
-	<template v-for="file in note.files">
-		<div v-if="file.isSensitive && !showingFiles.includes(file.id)" :class="$style.img"
-				 @click="showingFiles.push(file.id)">
-			<!-- TODO: 画像以外のファイルに対応 -->
-			<ImgWithBlurhash :class="$style.sensitiveImg" :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"
-											 :forceBlurhash="true"/>
-			<div :class="$style.sensitive">
-				<div>
-					<div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
-					<div>{{ i18n.ts.clickToShow }}</div>
-
-				</div>
-			</div>
-		</div>
-		<MkA v-else :class="$style.img" :to="notePage(note)">
-			<!-- TODO: 画像以外のファイルに対応 -->
-			<ImgWithBlurhash :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"/>
-		</MkA>
-	</template>
+  <template v-for="file in note.files">
+    <div v-if="file.type.startsWith('video')" :class="$style.img" style="background-color: #2d2d2d">
+      <MkA :class="$style.sensitive" :to="notePage(note)">
+        <div>
+          <div><i class="ti ti-movie"></i> {{ i18n.ts.video }}</div>
+          <div>{{ i18n.ts.clickToShow }}</div>
+        </div>
+      </MkA>
+    </div>
+    <div v-else-if="file.isSensitive && !showingFiles.includes(file.id)" :class="$style.img"
+         @click="showingFiles.push(file.id)">
+      <ImgWithBlurhash :class="$style.sensitiveImg" :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"
+                       :forceBlurhash="true"/>
+      <div :class="$style.sensitive">
+        <div>
+          <div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
+          <div>{{ i18n.ts.clickToShow }}</div>
+        </div>
+      </div>
+    </div>
+    <MkA v-else :class="$style.img" :to="notePage(note)">
+      <ImgWithBlurhash :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"/>
+    </MkA>
+  </template>
 </template>
 
 <script lang="ts" setup>
