@@ -169,7 +169,7 @@ watch(folder, () => emit('cd', folder.value));
 const usage = ref<number | null>(null);
 const capacity = ref<number | null>(null);
 
-os.api('drive').then(info => {
+misskeyApi('drive').then(info => {
 	capacity.value = info.capacity;
 	usage.value = info.usage;
 });

@@ -11,15 +11,15 @@ import { computed, ref } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 let makeyHideFederatedTimeline = ref($i.makeyHideFederatedTimeline);
 
 
 function save() {
-	os.api('i/update', {
+	misskeyApi('i/update', {
 		makeyHideFederatedTimeline: !!makeyHideFederatedTimeline.value,
 	});
 }
