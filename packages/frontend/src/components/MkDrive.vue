@@ -169,11 +169,10 @@ watch(folder, () => emit('cd', folder.value));
 const usage = ref<number | null>(null);
 const capacity = ref<number | null>(null);
 
-os.api('drive').then(info => {
-	capacity.value = info.capacity;
-	usage.value = info.usage;
+misskeyApi('drive').then(info => {
+  capacity.value = info.capacity;
+  usage.value = info.usage;
 });
-
 function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
 	addFile(file, true);
 }
