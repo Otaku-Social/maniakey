@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFoldableSection>
 			</div>
       <div v-if="tab === 'allList'" key="allList">
-        <MkPagination v-slot="{items}" :pagination="featuredPagination">
+        <MkPagination v-slot="{items}" :pagination="allListPagination">
           <div :class="$style.root">
             <MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
           </div>
