@@ -8,30 +8,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div v-if="$i">
-			<div v-if="state == 'waiting'">
-				<MkLoading/>
-			</div>
-			<div v-if="state == 'denied'">
-				<p>{{ i18n.ts._auth.denied }}</p>
-			</div>
-			<div v-else-if="state == 'accepted'" class="accepted">
-				<p v-if="callback">{{ i18n.ts._auth.callback }}<MkEllipsis/></p>
-				<p v-else>{{ i18n.ts._auth.pleaseGoBack }}</p>
+			<div v-if="$i.policies.canCreateAccessToken">
+				<div v-if="state == 'waiting'">
+					<MkLoading/>
+				</div>
+				<div v-if="state == 'denied'">
+					<p>{{ i18n.ts._auth.denied }}</p>
+				</div>
+				<div v-else-if="state == 'accepted'" class="accepted">
+					<p v-if="callback">{{ i18n.ts._auth.callback }}<MkEllipsis/></p>
+					<p v-else>{{ i18n.ts._auth.pleaseGoBack }}</p>
+				</div>
+				<div v-else>
+					<MkInfo warn>{{ i18n.ts.warnAuthApp }}</MkInfo>
+					<div v-if="_permissions.length > 0">
+						<p v-if="name">{{ i18n.tsx._auth.permission({ name }) }}</p>
+						<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
+						<ul>
+							<li v-for="p in _permissions" :key="p">{{ i18n.ts._permissions[p] }}</li>
+						</ul>
+					</div>
+					<div v-if="name">{{ i18n.tsx._auth.shareAccess({ name }) }}</div>
+					<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
+					<div :class="$style.buttons">
+						<MkButton inline @click="deny">{{ i18n.ts.cancel }}</MkButton>
+						<MkButton inline primary @click="accept">{{ i18n.ts.accept }}</MkButton>
+					</div>
+				</div>
 			</div>
 			<div v-else>
-				<div v-if="_permissions.length > 0">
-					<p v-if="name">{{ i18n.tsx._auth.permission({ name }) }}</p>
-					<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
-					<ul>
-						<li v-for="p in _permissions" :key="p">{{ i18n.ts._permissions[p] }}</li>
-					</ul>
-				</div>
-				<div v-if="name">{{ i18n.tsx._auth.shareAccess({ name }) }}</div>
-				<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
-				<div :class="$style.buttons">
-					<MkButton inline @click="deny">{{ i18n.ts.cancel }}</MkButton>
-					<MkButton inline primary @click="accept">{{ i18n.ts.accept }}</MkButton>
-				</div>
+				<MkInfo warn>{{ i18n.ts.noPermissionToUseMiAuth }}</MkInfo>
 			</div>
 		</div>
 		<div v-else>
@@ -50,6 +56,7 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { $i, login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkInfo from "@/components/MkInfo.vue";
 
 const props = defineProps<{
 	session: string;
