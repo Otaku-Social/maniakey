@@ -5,14 +5,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
+	<div v-if="$i.policies.canCreateAccessToken">
+		<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
 
-	<MkCodeEditor v-model="code" lang="is">
-		<template #label>{{ i18n.ts.code }}</template>
-	</MkCodeEditor>
+		<MkCodeEditor v-model="code" lang="is">
+			<template #label>{{ i18n.ts.code }}</template>
+		</MkCodeEditor>
 
-	<div>
-		<MkButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
+		<div>
+			<MkButton :disabled="code == null" primary inline @click="install"><i class="ti ti-check"></i> {{ i18n.ts.install }}</MkButton>
+		</div>
+	</div>
+	<div v-else>
+		<MkInfo warn>{{ i18n.ts.noPermissionToUseMiAuth }}</MkInfo>
 	</div>
 </div>
 </template>
@@ -27,6 +32,8 @@ import { installPlugin } from '@/scripts/install-plugin.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i } from '@/account.js';
+import MkInfo from "@/components/MkInfo.vue";
 
 const code = ref<string | null>(null);
 

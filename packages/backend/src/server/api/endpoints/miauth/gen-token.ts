@@ -14,6 +14,7 @@ export const meta = {
 	tags: ['auth'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canCreateAccessToken',
 
 	secure: true,
 
