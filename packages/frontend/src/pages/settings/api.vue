@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 	<div class="_gaps_m">
 		<MkButton v-if="$i.policies.canCreateAccessToken" primary @click="generateToken">{{ i18n.ts.generateAccessToken }}</MkButton>
-		<MkInfo v-else>{{ i18n.ts.noPermissionGenerateToken }}</MkInfo>
+		<MkInfo warn v-else>{{ i18n.ts.noPermissionGenerateToken }}</MkInfo>
 		<FormLink to="/settings/apps">{{ i18n.ts.manageAccessTokens }}</FormLink>
 		<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
 	</div>

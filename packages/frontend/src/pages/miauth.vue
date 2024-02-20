@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<p v-else>{{ i18n.ts._auth.pleaseGoBack }}</p>
 				</div>
 				<div v-else>
+					<MkInfo warn>{{ i18n.ts.warnAuthApp }}</MkInfo>
 					<div v-if="_permissions.length > 0">
 						<p v-if="name">{{ i18n.tsx._auth.permission({ name }) }}</p>
 						<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
@@ -36,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 			<div v-else>
-				<MkInfo>{{ i18n.ts.noPermissionToUseMiAuth }}</MkInfo>
+				<MkInfo warn>{{ i18n.ts.noPermissionToUseMiAuth }}</MkInfo>
 			</div>
 		</div>
 		<div v-else>
