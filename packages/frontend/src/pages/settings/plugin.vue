@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<FormLink to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
-
+	<FormLink v-if="$i.policies.canCreateAccessToken" to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
+	<MkInfo v-else warn>{{ i18n.ts.noPermissionToUseMiAuth }}</MkInfo>
 	<FormSection>
 		<template #label>{{ i18n.ts.manage }}</template>
 		<div class="_gaps_s">
@@ -74,6 +74,8 @@ import { ColdDeviceStorage } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i } from '@/account.js';
+import MkInfo from "@/components/MkInfo.vue";
 
 const plugins = ref(ColdDeviceStorage.get('plugins'));
 
