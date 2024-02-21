@@ -1,10 +1,10 @@
 {
 	"name": "misskey",
-	"version": "2024.2.0",
+	"version": "2024.2.0-MH-R2",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/tmorio/maniakey/tree/homes"
+		"url": "https://github.com/Otaku-Social/maniakey/"
 	},
 	"packageManager": "pnpm@8.15.1",
 	"workspaces": [
