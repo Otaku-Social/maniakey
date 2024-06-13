@@ -132,6 +132,7 @@ import * as ep___clips_create from './endpoints/clips/create.js';
 import * as ep___clips_delete from './endpoints/clips/delete.js';
 import * as ep___clips_list from './endpoints/clips/list.js';
 import * as ep___clips_notes from './endpoints/clips/notes.js';
+import * as ep___clips_file_notes from './endpoints/clips/file-notes.js';
 import * as ep___clips_show from './endpoints/clips/show.js';
 import * as ep___clips_update from './endpoints/clips/update.js';
 import * as ep___clips_favorite from './endpoints/clips/favorite.js';
@@ -505,6 +506,7 @@ const $clips_create: Provider = { provide: 'ep:clips/create', useClass: ep___cli
 const $clips_delete: Provider = { provide: 'ep:clips/delete', useClass: ep___clips_delete.default };
 const $clips_list: Provider = { provide: 'ep:clips/list', useClass: ep___clips_list.default };
 const $clips_notes: Provider = { provide: 'ep:clips/notes', useClass: ep___clips_notes.default };
+const $clips_file_notes: Provider = { provide: 'ep:clips/file-notes', useClass: ep___clips_file_notes.default };
 const $clips_show: Provider = { provide: 'ep:clips/show', useClass: ep___clips_show.default };
 const $clips_update: Provider = { provide: 'ep:clips/update', useClass: ep___clips_update.default };
 const $clips_favorite: Provider = { provide: 'ep:clips/favorite', useClass: ep___clips_favorite.default };
@@ -882,6 +884,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$clips_delete,
 		$clips_list,
 		$clips_notes,
+		$clips_file_notes,
 		$clips_show,
 		$clips_update,
 		$clips_favorite,
@@ -1253,6 +1256,7 @@ const $reversi_verify: Provider = { provide: 'ep:reversi/verify', useClass: ep__
 		$clips_delete,
 		$clips_list,
 		$clips_notes,
+		$clips_file_notes,
 		$clips_show,
 		$clips_update,
 		$clips_favorite,
