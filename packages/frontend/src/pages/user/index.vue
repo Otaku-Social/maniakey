@@ -14,7 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<XTimeline :user="user"/>
 				</MkSpacer>
         <XGalleryFromPosts v-else-if="tab === 'galleryFromPosts'" :user="user"/>
-        <XAchievements v-else-if="tab === 'achievements'" key="achievements" :user="user"/>
+				<XClipsMedia v-else-if="tab === 'clipsMedia'" :user="user"/>
+				<XAchievements v-else-if="tab === 'achievements'" key="achievements" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" key="reactions" :user="user"/>
         <XMore v-else-if="tab === 'more'" key="more" :user="user"/>
       </MkHorizontalSwipe>
@@ -37,6 +38,7 @@ import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
+const XClipsMedia = defineAsyncComponent(() => import('./clipsMedia.vue'));
 const XAchievements = defineAsyncComponent(() => import('./achievements.vue'));
 const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
 const XGalleryFromPosts = defineAsyncComponent(() => import('./post-gallery.vue'));
@@ -83,6 +85,10 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'galleryFromPosts',
 	title: i18n.ts.galleryFromPost,
 	icon: 'ti ti-icons',
+},{
+	key: 'clipsMedia',
+	title: i18n.ts.clips + " (β)",
+	icon: 'ti ti-paperclip',
 },  ...(user.value.host == null ? [{
 	key: 'achievements',
 	title: i18n.ts.achievements,
