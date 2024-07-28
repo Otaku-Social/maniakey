@@ -132,6 +132,7 @@ import * as ep___clips_create from './endpoints/clips/create.js';
 import * as ep___clips_delete from './endpoints/clips/delete.js';
 import * as ep___clips_list from './endpoints/clips/list.js';
 import * as ep___clips_notes from './endpoints/clips/notes.js';
+import * as ep___clips_file_notes from './endpoints/clips/file-notes.js';
 import * as ep___clips_show from './endpoints/clips/show.js';
 import * as ep___clips_update from './endpoints/clips/update.js';
 import * as ep___clips_favorite from './endpoints/clips/favorite.js';
@@ -503,6 +504,7 @@ const eps = [
 	['clips/delete', ep___clips_delete],
 	['clips/list', ep___clips_list],
 	['clips/notes', ep___clips_notes],
+	['clips/file-notes', ep___clips_file_notes],
 	['clips/show', ep___clips_show],
 	['clips/update', ep___clips_update],
 	['clips/favorite', ep___clips_favorite],
