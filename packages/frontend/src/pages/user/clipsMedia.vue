@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<MkSpacer :contentMax="1200">
-		<MkInfo>この機能は実験的なものです。将来的に仕様変更される可能性があります。</MkInfo>
+		<MkInfo>β版の機能です。是非感想などを投稿ください！<br>Misskey標準の機能は「もっと！」→「クリップ」からアクセスできます。</MkInfo>
 		<div :class="$style.tabPadding">
 			<MkTab v-model="tab" class="tab">
 				<option :value="null">{{ i18n.ts.clip }}</option>
