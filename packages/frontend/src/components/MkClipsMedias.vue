@@ -33,11 +33,11 @@ const pagination = {
 
 .stream {
 	padding-top: 8px;
-	height: 130px;
+	height: 115px;
 	width: 100%;
 	overflow: hidden;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
 	grid-gap: 6px;
 }
 
