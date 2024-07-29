@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<XTimeline :user="user"/>
 				</MkSpacer>
 				<XGalleryFromPosts v-else-if="tab === 'galleryFromPosts'" key="galleryFromPosts" :user="user"/>
-				<XClipsMedia v-else-if="tab === 'clipsMedia'" :user="user"/>
+				<XClipsMedia v-else-if="tab === 'clipsMedia'" key="clipsMedia" :user="user"/>
 				<XAchievements v-else-if="tab === 'achievements'" key="achievements" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" key="reactions" :user="user"/>
 				<XMore v-else-if="tab === 'more'" key="more" :user="user"/>
