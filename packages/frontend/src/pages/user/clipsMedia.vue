@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div v-if="tab === 'grid'" :class="$style.gridContainer">
 					<div v-for="item in items">
-						<MkA :key="item.id" :to="`/clips/${item.id}`" :class="$style.item" class="_panel _margin">
+						<MkA :key="item.id" :to="`/clips/${item.id}`" :class="$style.item" class="_panel">
 							<div :class="$style.title">
 								<b>{{ item.name }}</b>
 							</div>
@@ -91,7 +91,7 @@ const pagination = {
 	width: 100%;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-	grid-gap: 3px;
+	grid-gap: 8px;
 }
 
 @media (min-width: 720px) {
