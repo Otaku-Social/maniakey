@@ -5,8 +5,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<MkPaginationNoMessage v-slot="{items}" ref="list" :pagination="pagination">
-		<div :class="$style.stream" v-if="items.length > 0">
-			<MkClipsNotesWithMedia v-for="note in items" :note="note"/>
+		<div v-if="items.length > 0">
+			<div v-if="!props.grid" :class="$style.stream">
+				<MkClipsNotesWithMedia v-for="note in items" :note="note"/>
+			</div>
+			<div v-else :class="$style.streamGrid">
+				<MkClipsNotesWithMedia v-for="note in items" :note="note"/>
+			</div>
 		</div>
 	</MkPaginationNoMessage>
 </template>
@@ -17,6 +22,7 @@ import MkClipsNotesWithMedia from "@/components/MkClipsNotesWithMedia.vue";
 import MkPaginationNoMessage from "@/components/MkPaginationNoMessage.vue";
 
 const props = defineProps<{
+	grid: boolean;
 	clipId: string;
 }>();
 
@@ -33,18 +39,29 @@ const pagination = {
 
 .stream {
 	padding-top: 8px;
-	height: 130px;
+	height: 115px;
 	width: 100%;
 	overflow: hidden;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
 	grid-gap: 6px;
+}
+
+.streamGrid {
+	padding-bottom: 8px;
+	height: 120px;
+	width: 100%;
+	overflow: hidden;
 }
 
 @media (min-width: 720px) {
 	.stream {
 		height: 180px;
 		grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+	}
+
+	.streamGrid {
+		height: 180px;
 	}
 }
 
