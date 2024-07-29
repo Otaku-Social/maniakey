@@ -48,7 +48,7 @@ const props = defineProps<{
 <style lang="scss" module>
 .img {
 	position: relative;
-	height: 130px;
+	height: 115px;
 	border-radius: 6px;
 	overflow: clip;
 }
