@@ -26,7 +26,7 @@ import MkInfo from "@/components/MkInfo.vue";
 const isDesktop = ref(window.innerWidth >= 1100);
 
 function generateToken() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {}, {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {}, {
 		done: async result => {
 			const { name, permissions } = result;
 			const { token } = await misskeyApi('miauth/gen-token', {
@@ -41,7 +41,8 @@ function generateToken() {
 				text: token,
 			});
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 
 const headerActions = computed(() => []);
