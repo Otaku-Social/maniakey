@@ -16,11 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkError v-else-if="error" @retry="init()"/>
 
 	<div v-else ref="rootEl">
-		<div v-show="pagination.reversed && more" key="_more_" class="_margin">
+		<div v-show="pagination.reversed && more" key="_more_">
 			<MkLoading v-if="moreFetching" class="loading"/>
 		</div>
 		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
-		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
+		<div v-show="!pagination.reversed && more" key="_more_">
 			<MkLoading v-if="moreFetching" class="loading"/>
 		</div>
 	</div>

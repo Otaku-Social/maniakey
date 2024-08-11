@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<MkSpacer :contentMax="1200">
-		<MkInfo>β版の機能です。是非感想などを投稿ください！<br>Misskey標準の機能は「もっと！」→「クリップ」からアクセスできます。</MkInfo>
+		<MkInfo>β版の機能です。是非感想などを投稿ください！ #まにあきークリップ<br>Misskey標準の機能は「もっと！」→「クリップ」からアクセスできます。</MkInfo>
 		<div :class="$style.tabPadding">
 			<MkTab v-model="tab" class="tab">
 				<option :value="null">{{ i18n.ts.clip }}</option>
@@ -21,17 +21,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<b>{{ item.name }}</b>
 								</div>
 								<div v-if="item.description" :class="$style.description">{{ item.description }}</div>
-								<MkClipsMedias :clipId="item.id" :grid="false"/>
+								<MkClipsMedias :clipId="item.id" :grid="false" />
 							</MkA>
 					</div>
 				</div>
 				<div v-if="tab === 'grid'" :class="$style.gridContainer">
 					<div v-for="item in items">
-						<MkA :key="item.id" :to="`/clips/${item.id}`" :class="$style.item" class="_panel">
-							<div :class="$style.title">
+						<MkA :key="item.id" :to="`/clips/${item.id}`">
+							<MkClipsMedias :clipId="item.id" :grid="true" />
+							<div :class="$style.titleGrid">
 								<b>{{ item.name }}</b>
 							</div>
-							<MkClipsMedias :clipId="item.id" :grid="false"/>
 						</MkA>
 					</div>
 				</div>
@@ -67,11 +67,16 @@ const pagination = {
 <style lang="scss" module>
 .item {
 	display: block;
-	padding: 16px;
+	padding: 10px;
 }
 
 .title {
 	font-size: 1.1rem;
+}
+
+.titleGrid {
+	padding-top: 3px;
+	font-size: 1.05rem;
 }
 
 .description {
@@ -90,13 +95,19 @@ const pagination = {
 .gridContainer {
 	width: 100%;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-	grid-gap: 8px;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	grid-gap: 3px;
 }
 
 @media (min-width: 720px) {
+	.titleGrid {
+		padding-top: 8px;
+		font-size: 1.1rem;
+	}
+
 	.gridContainer {
-		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		grid-gap: 8px;
 	}
 }
 </style>

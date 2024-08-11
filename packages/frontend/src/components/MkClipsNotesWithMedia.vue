@@ -4,23 +4,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<template v-for="file in note.files">
-		<div v-if="file.type.startsWith('video')" :class="$style.img" style="background-color: #2d2d2d">
+	<template v-for="(file, index) in note.files">
+		<div v-if="props.grid && index == 0">
+			<div v-if="file.type.startsWith('video')" :class="$style.imgGrid" style="background-color: #2d2d2d">
 				<div :class="$style.sensitive">
 					<div><i class="ti ti-movie"></i> {{ i18n.ts.video }}</div>
 				</div>
-		</div>
-		<div v-else-if="file.isSensitive" :class="$style.img">
-			<ImgWithBlurhash :class="$style.sensitiveImg" :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"
-											 :forceBlurhash="true"/>
-			<div :class="$style.sensitive">
-				<div>
-					<div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
+			</div>
+			<div v-else-if="file.isSensitive" :class="$style.imgGrid">
+				<ImgWithBlurhash :class="$style.sensitiveImg" :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"
+												 :forceBlurhash="true"/>
+				<div :class="$style.sensitive">
+					<div>
+						<div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
+					</div>
 				</div>
 			</div>
+			<div v-else :class="$style.imgGrid" >
+				<ImgWithBlurhash :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"/>
+			</div>
 		</div>
-		<div v-else :class="$style.img" >
-			<ImgWithBlurhash :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"/>
+		<div v-else-if="!props.grid">
+			<div v-if="file.type.startsWith('video')" :class="$style.img" style="background-color: #2d2d2d">
+				<div :class="$style.sensitive">
+					<div><i class="ti ti-movie"></i> {{ i18n.ts.video }}</div>
+				</div>
+			</div>
+			<div v-else-if="file.isSensitive" :class="$style.img">
+				<ImgWithBlurhash :class="$style.sensitiveImg" :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"
+												 :forceBlurhash="true"/>
+				<div :class="$style.sensitive">
+					<div>
+						<div><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</div>
+					</div>
+				</div>
+			</div>
+			<div v-else :class="$style.img" >
+				<ImgWithBlurhash :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"/>
+			</div>
 		</div>
 	</template>
 </template>
@@ -41,6 +62,7 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 }
 
 const props = defineProps<{
+	grid: boolean;
 	note: Misskey.entities.Note;
 }>();
 </script>
@@ -48,14 +70,26 @@ const props = defineProps<{
 <style lang="scss" module>
 .img {
 	position: relative;
-	height: 115px;
+	height: 110px;
 	border-radius: 6px;
 	overflow: clip;
+}
+
+.imgGrid {
+	position: relative;
+	height: 160px;
+	border-radius: 6px;
+	overflow: clip;
+	background-color: #ffffff;
 }
 
 @media (min-width: 720px) {
 	.img {
 		height: 180px;
+	}
+
+	.imgGrid {
+		height: 250px;
 	}
 }
 
