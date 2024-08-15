@@ -4,4 +4,8 @@ contact_links:
     about: Otaku Social が運営するサーバーに関するお問い合わせはこちら。（アカウントをお持ちの場合はDMでもOKです。）
   - name: 💬 Misskey official Discord
     url: https://discord.gg/Wp8gVStHW3
-    about: Misskey 全体に関わるチャットはこちら
+    about: Chat freely about Misskey
+  # 仮
+  - name: 💬 Start discussion
+    url: https://github.com/misskey-dev/misskey/discussions
+    about: The official forum to join conversation and ask question

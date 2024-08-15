@@ -6,11 +6,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 	<MkPaginationNoMessage v-slot="{items}" ref="list" :pagination="pagination">
 		<div v-if="items.length > 0">
-			<div v-if="!props.grid" :class="$style.stream">
-				<MkClipsNotesWithMedia v-for="note in items" :note="note"/>
+			<div :class="$style.streamGrid" v-if="props.grid">
+				<MkClipsNotesWithMedia v-for="note in items" :note="note" :grid="true" />
 			</div>
-			<div v-else :class="$style.streamGrid">
-				<MkClipsNotesWithMedia v-for="note in items" :note="note"/>
+			<div :class="$style.stream" v-else>
+				<MkClipsNotesWithMedia v-for="note in items" :note="note" :grid="false" />
+			</div>
+		</div>
+		<div v-if="items.length === 0 && props.grid">
+			<div :class="$style.streamGrid">
+				<div :class="$style.warn" style="background-color: #2d2d2d">
+					<div :class="$style.info">
+						<div><i class="ti ti-info-circle"></i> No Media</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</MkPaginationNoMessage>
@@ -28,7 +37,7 @@ const props = defineProps<{
 
 const pagination = {
 	endpoint: 'clips/file-notes' as const,
-	limit: 5,
+	limit: props.grid ? 1 : 5,
 	params: computed(() => ({
 		clipId: props.clipId,
 	})),
@@ -39,7 +48,7 @@ const pagination = {
 
 .stream {
 	padding-top: 8px;
-	height: 115px;
+	height: 110px;
 	width: 100%;
 	overflow: hidden;
 	display: grid;
@@ -48,10 +57,33 @@ const pagination = {
 }
 
 .streamGrid {
-	padding-bottom: 8px;
-	height: 120px;
+	padding-top: 8px;
+	height: 160px;
 	width: 100%;
 	overflow: hidden;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	grid-gap: 6px;
+}
+
+.warn {
+	position: relative;
+	height: 160px;
+	border-radius: 6px;
+	overflow: clip;
+}
+
+.info {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+	font-size: 0.8em;
+	color: #fff;
+	cursor: pointer;
 }
 
 @media (min-width: 720px) {
@@ -61,7 +93,12 @@ const pagination = {
 	}
 
 	.streamGrid {
-		height: 180px;
+		height: 250px;
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	}
+
+	.warn {
+		height: 250px;
 	}
 }
 
