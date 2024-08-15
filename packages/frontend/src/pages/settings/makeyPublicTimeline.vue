@@ -1,3 +1,10 @@
+<!--
+SPDX-FileCopyrightText: Morikapu @tmorio
+This source code is based on existing implementations.
+I would like to express my gratitude to all Misskey developers and contributors.
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<MkInfo>これらの設定をオンにしてもノートの公開範囲によっては公開タイムラインに掲載されます。画面に反映するにはリロードしてください。</MkInfo>
