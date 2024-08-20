@@ -27,13 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch, ref } from 'vue';
+import {computed, defineAsyncComponent, ref, watch} from 'vue';
 import * as Misskey from 'misskey-js';
-import { acct as getAcct } from '@/filters/user.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
+import {acct as getAcct} from '@/filters/user.js';
+import {misskeyApi} from '@/scripts/misskey-api.js';
+import {definePageMetadata} from '@/scripts/page-metadata.js';
+import {i18n} from '@/i18n.js';
+import {$i} from '@/account.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
@@ -85,11 +85,11 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'galleryFromPosts',
 	title: i18n.ts.galleryFromPost,
 	icon: 'ti ti-icons',
-},{
+}, ...(user.value.host == null ? [{
 	key: 'clipsMedia',
 	title: i18n.ts.clips + " (β)",
 	icon: 'ti ti-paperclip',
-},  ...(user.value.host == null ? [{
+}] : []), ...(user.value.host == null ? [{
 	key: 'achievements',
 	title: i18n.ts.achievements,
 	icon: 'ti ti-medal',
@@ -97,11 +97,12 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'reactions',
 	title: i18n.ts.reaction,
 	icon: 'ti ti-mood-happy',
-}] : [], {
+}] : [], ...(user.value.host == null ? [{
 	key: 'more',
 	title: i18n.ts.more,
 	icon: 'ti ti-menu',
-}] : []);
+}] : [])
+] : []);
 
 definePageMetadata(() => ({
 	title: i18n.ts.user,
