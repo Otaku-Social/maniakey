@@ -5,7 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<MkSpacer :contentMax="1100">
-		<MkSwitch v-model="nsfwNoConfirm">センシティブをモザイクなしで表示する</MkSwitch>
+		<div :class="$style.root">
+			<MkSwitch v-model="nsfwNoConfirm">センシティブをモザイクなしで表示する</MkSwitch>
+		</div>
 		<div :class="$style.root">
 			<MkPagination v-slot="{items}" :pagination="pagination">
 				<div :class="$style.stream">
