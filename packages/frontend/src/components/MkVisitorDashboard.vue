@@ -111,8 +111,8 @@ function lookLocalTimeline() {
 
 .panel {
 	position: relative;
-	background: var(--panel);
-	border-radius: var(--radius);
+	background: var(--MI_THEME-panel);
+	border-radius: var(--MI-radius);
 	box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
 }
 
@@ -183,14 +183,14 @@ function lookLocalTimeline() {
 }
 
 .statsItemLabel {
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 	font-size: 0.9em;
 }
 
 .statsItemCount {
 	font-weight: bold;
 	font-size: 1.2em;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 }
 
 .tl {
@@ -199,7 +199,7 @@ function lookLocalTimeline() {
 
 .tlHeader {
 	padding: 12px 16px;
-	border-bottom: solid 1px var(--divider);
+	border-bottom: solid 1px var(--MI_THEME-divider);
 }
 
 .tlBody {
