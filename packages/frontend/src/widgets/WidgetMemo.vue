@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" data-cy-mkw-memo class="mkw-memo">
 	<template #icon><i class="ti ti-note"></i></template>
-	<template #header>{{ i18n.ts._widgets.memo }}</template>
+	<template #header>{{ widgetProps.name || i18n.ts._widgets.memo }}</template>
 
 	<div :class="$style.root">
 		<textarea v-model="text" :style="`height: ${widgetProps.height}px;`" :class="$style.textarea" :placeholder="i18n.ts.placeholder" @input="onChange"></textarea>
@@ -30,6 +30,10 @@ const widgetPropsDef = {
 		type: 'boolean' as const,
 		default: true,
 	},
+	name: {
+		type: 'string' as const,
+		default: '',
+	},
 	height: {
 		type: 'number' as const,
 		default: 100,
@@ -47,12 +51,20 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const text = ref<string | null>(defaultStore.state.memo);
+const getMemo = () => {
+	if (typeof defaultStore.state.memo === 'object') return defaultStore.state.memo?.[props.widget?.id ?? 'default'];
+	if (typeof defaultStore.state.memo === 'string') return defaultStore.state.memo;
+	return null;
+};
+
+const text = ref<string | null>(getMemo());
 const changed = ref(false);
 let timeoutId;
 
 const saveMemo = () => {
-	defaultStore.set('memo', text.value);
+	const memo = typeof defaultStore.state.memo === 'object' ? defaultStore.state.memo : {};
+	memo![props.widget?.id ?? 'default'] = text.value;
+	defaultStore.set('memo', memo);
 	changed.value = false;
 };
 
@@ -62,8 +74,8 @@ const onChange = () => {
 	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 
-watch(() => defaultStore.reactiveState.memo, newText => {
-	text.value = newText.value;
+watch(() => defaultStore.reactiveState.memo, () => {
+	text.value = getMemo();
 });
 
 defineExpose<WidgetComponentExpose>({
@@ -84,10 +96,10 @@ defineExpose<WidgetComponentExpose>({
 	max-width: 100%;
 	min-width: 100%;
 	padding: 16px;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	background: transparent;
 	border: none;
-	border-bottom: solid 0.5px var(--divider);
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 	border-radius: 0;
 	box-sizing: border-box;
 	font: inherit;

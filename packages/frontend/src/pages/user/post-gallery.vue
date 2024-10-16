@@ -6,9 +6,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 	<MkSpacer :contentMax="1100">
 		<div :class="$style.root">
+			<MkSwitch v-model="nsfwNoConfirm">センシティブをモザイクなしで表示する</MkSwitch>
+		</div>
+		<div :class="$style.root">
 			<MkPagination v-slot="{items}" :pagination="pagination">
 				<div :class="$style.stream">
-					<MkMedias v-for="note in items" :note="note"/>
+					<MkMedias v-for="note in items" :note="note" :nsfwNoConfirm="nsfwNoConfirm"/>
 				</div>
 			</MkPagination>
 		</div>
@@ -19,12 +22,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 import MkMedias from "@/components/MkMedias.vue";
 import MkPagination from "@/components/MkPagination.vue";
-import {computed} from "vue";
+import {ref, computed} from "vue";
 import * as Misskey from "misskey-js";
+import MkSwitch from "@/components/MkSwitch.vue";
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
+
+const nsfwNoConfirm = ref<boolean>(false);
 
 const pagination = {
 	endpoint: 'users/notes' as const,

@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
         </div>
       </MkA>
     </div>
-    <div v-else-if="file.isSensitive && !showingFiles.includes(file.id)" :class="$style.img"
+    <div v-else-if="file.isSensitive && !showingFiles.includes(file.id) && !nsfwNoConfirm" :class="$style.img"
          @click="showingFiles.push(file.id)">
       <ImgWithBlurhash :class="$style.sensitiveImg" :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"
                        :forceBlurhash="true"/>
@@ -51,6 +51,7 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
+	nsfwNoConfirm: boolean;
 }>();
 </script>
 
