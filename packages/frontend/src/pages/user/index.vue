@@ -87,7 +87,7 @@ const headerTabs = computed(() => user.value ? [{
 	icon: 'ti ti-icons',
 }, ...(user.value.host == null ? [{
 	key: 'clipsMedia',
-	title: i18n.ts.clips + " (β)",
+	title: i18n.ts.clips,
 	icon: 'ti ti-paperclip',
 }] : []), ...(user.value.host == null ? [{
 	key: 'achievements',
