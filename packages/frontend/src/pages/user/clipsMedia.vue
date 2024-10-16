@@ -5,7 +5,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<MkSpacer :contentMax="1200">
-		<MkInfo>β版の機能です。#まにあきークリップ<br>通常版は「もっと！」→「クリップ」からご利用頂けます。</MkInfo>
 		<div :class="$style.tabPadding">
 			<MkTab v-model="tab" class="tab">
 				<option :value="null">{{ i18n.ts.clip }}</option>
