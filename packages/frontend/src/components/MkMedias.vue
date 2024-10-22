@@ -6,7 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <!-- TODO: 画像以外のファイルは後で考慮 -->
 <template>
   <template v-for="file in note.files">
-    <div v-if="file.type.startsWith('video')" :class="$style.img" style="background-color: #2d2d2d">
+    <div v-if="file.type.startsWith('video')"
+				 :class="[moreColumn ? $style.imgMoreColumn : $style.img]" style="background-color: #2d2d2d">
       <MkA :class="$style.sensitive" :to="notePage(note)">
         <div>
           <div><i class="ti ti-movie"></i> {{ i18n.ts.video }}</div>
@@ -14,7 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
         </div>
       </MkA>
     </div>
-    <div v-else-if="file.isSensitive && !showingFiles.includes(file.id) && !nsfwNoConfirm" :class="$style.img"
+    <div v-else-if="file.isSensitive && !showingFiles.includes(file.id) && !nsfwNoConfirm"
+				 :class="[moreColumn ? $style.imgMoreColumn : $style.img]"
          @click="showingFiles.push(file.id)">
       <ImgWithBlurhash :class="$style.sensitiveImg" :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"
                        :forceBlurhash="true"/>
@@ -25,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
         </div>
       </div>
     </div>
-    <MkA v-else :class="$style.img" :to="notePage(note)">
+    <MkA v-else :class="[moreColumn ? $style.imgMoreColumn : $style.img]" :to="notePage(note)">
       <ImgWithBlurhash :hash="file.blurhash" :src="thumbnail(file)" :title="file.name"/>
     </MkA>
   </template>
@@ -52,15 +54,33 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 const props = defineProps<{
 	note: Misskey.entities.Note;
 	nsfwNoConfirm: boolean;
+	moreColumn: boolean;
 }>();
 </script>
 
 <style lang="scss" module>
 .img {
 	position: relative;
-	height: 220px;
+	height: 160px;
 	border-radius: 6px;
 	overflow: clip;
+}
+
+.imgMoreColumn {
+	position: relative;
+	height: 100px;
+	border-radius: 6px;
+	overflow: clip;
+}
+
+@media (min-width: 720px) {
+	.img {
+		height: 250px;
+	}
+
+	.imgMoreColumn {
+		height: 180px;
+	}
 }
 
 .empty {

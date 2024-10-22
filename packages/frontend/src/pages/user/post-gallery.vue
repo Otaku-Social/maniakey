@@ -7,11 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="1100">
 		<div :class="$style.root">
 			<MkSwitch v-model="nsfwNoConfirm">センシティブをモザイクなしで表示する</MkSwitch>
+			<MkSwitch v-model="moreColumn">列を増やして表示する</MkSwitch>
 		</div>
 		<div :class="$style.root">
 			<MkPagination v-slot="{items}" :pagination="pagination">
-				<div :class="$style.stream">
-					<MkMedias v-for="note in items" :note="note" :nsfwNoConfirm="nsfwNoConfirm"/>
+				<div :class="[moreColumn ? $style.moreColumnsStream : $style.stream]">
+					<MkMedias v-for="note in items" :note="note" :nsfwNoConfirm="nsfwNoConfirm" :moreColumn="moreColumn"/>
 				</div>
 			</MkPagination>
 		</div>
@@ -22,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 import MkMedias from "@/components/MkMedias.vue";
 import MkPagination from "@/components/MkPagination.vue";
-import {ref, computed} from "vue";
+import {ref, computed, onMounted} from "vue";
 import * as Misskey from "misskey-js";
 import MkSwitch from "@/components/MkSwitch.vue";
 
@@ -31,6 +32,7 @@ const props = defineProps<{
 }>();
 
 const nsfwNoConfirm = ref<boolean>(false);
+const moreColumn = ref<boolean>(false);
 
 const pagination = {
 	endpoint: 'users/notes' as const,
@@ -45,6 +47,9 @@ const pagination = {
 <style lang="scss" module>
 .root {
 	padding: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75em;
 }
 
 .stream {
@@ -53,9 +58,19 @@ const pagination = {
 	grid-gap: 6px;
 }
 
+.moreColumnsStream {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	grid-gap: 6px;
+}
+
 @media (min-width: 720px) {
 	.stream {
 		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	}
+
+	.moreColumnsStream {
+		grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 	}
 }
 </style>
