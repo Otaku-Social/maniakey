@@ -187,6 +187,6 @@ definePageMetadata(() => ({
 .root {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-	grid-gap: var(--margin);
+	grid-gap: 8px;
 }
 </style>
