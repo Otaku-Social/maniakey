@@ -60,27 +60,17 @@ const props = defineProps<{
 
 <style lang="scss" module>
 .img {
+	aspect-ratio: 1/1;
 	position: relative;
-	height: 160px;
 	border-radius: 6px;
 	overflow: clip;
 }
 
 .imgMoreColumn {
+	aspect-ratio: 1/1;
 	position: relative;
-	height: 100px;
 	border-radius: 6px;
 	overflow: clip;
-}
-
-@media (min-width: 720px) {
-	.img {
-		height: 250px;
-	}
-
-	.imgMoreColumn {
-		height: 180px;
-	}
 }
 
 .empty {

@@ -54,23 +54,25 @@ const pagination = {
 
 .stream {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	grid-template-columns: 1fr 1fr;
+	grid-auto-rows: 1fr;
 	grid-gap: 6px;
 }
 
 .moreColumnsStream {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-auto-rows: 1fr;
 	grid-gap: 6px;
 }
 
 @media (min-width: 720px) {
 	.stream {
-		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+		grid-template-columns: 1fr 1fr 1fr 1fr;
 	}
 
 	.moreColumnsStream {
-		grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	}
 }
 </style>

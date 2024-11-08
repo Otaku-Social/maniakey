@@ -46,7 +46,6 @@ import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkClipsMedias from '@/components/MkClipsMedias.vue';
 import MkSpacer from "@/components/global/MkSpacer.vue";
-import MkInfo from "@/components/MkInfo.vue";
 import MkTab from '@/components/MkTab.vue';
 
 const tab = ref<string | null>(null);
@@ -94,8 +93,9 @@ const pagination = {
 .gridContainer {
 	width: 100%;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-	grid-gap: 3px;
+	grid-template-columns: 1fr 1fr;
+	grid-auto-rows: 1fr;
+	grid-gap: 6px;
 }
 
 @media (min-width: 720px) {
@@ -105,8 +105,7 @@ const pagination = {
 	}
 
 	.gridContainer {
-		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-		grid-gap: 8px;
+		grid-template-columns: 1fr 1fr  1fr 1fr;
 	}
 }
 </style>
