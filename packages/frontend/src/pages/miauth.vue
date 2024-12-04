@@ -24,9 +24,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</template>
 				</MkAuthConfirm>
-				<div v-else>
-					<MkInfo warn>{{ i18n.ts.noPermissionToUseMiAuth }}</MkInfo>
-				</div>
+			</div>
+			<div v-else>
+				<MkInfo warn>{{ i18n.ts.noPermissionToUseMiAuth }}</MkInfo>
 			</div>
 		</div>
 	</div>
