@@ -31,9 +31,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="folder != null" :class="[$style.navPathItem, $style.navCurrent]">{{ folder.name }}</span>
 		</div>
 		<div :class="$style.navMenu">
-			<MkA style="padding-right: 10px" :to="`/settings/drive`">
-				{{ i18n.ts.free }}: {{ bytes( capacity - usage, 1) }}/{{ bytes(capacity, 1) }}
-			</MkA>
+			<div :class="$style.driveUsage">
+				<MkA style="padding-right: 10px" :to="`/settings/drive`">
+					{{ i18n.ts.free }}: {{ bytes( capacity - usage, 1) }}/{{ bytes(capacity, 1) }}
+				</MkA>
+				<div :class="$style.meter"><div :class="$style.meterValue" :style="meterStyle"></div></div>
+			</div>
 			<button class="_button" @click="showMenu"><i class="ti ti-dots"></i></button>
 		</div>
 	</nav>
@@ -101,8 +104,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, shallowRef, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
+import tinycolor from 'tinycolor2';
 import MkButton from './MkButton.vue';
 import type { MenuItem } from '@/types/menu.js';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
@@ -179,6 +183,19 @@ misskeyApi('drive').then(info => {
   capacity.value = info.capacity;
   usage.value = info.usage;
 });
+
+const meterStyle = computed(() => {
+	if (!capacity.value || !usage.value) return {};
+	return {
+		width: `${usage.value / capacity.value * 100}%`,
+		background: tinycolor({
+			h: 180 - (usage.value / capacity.value * 180),
+			s: 0.7,
+			l: 0.5,
+		}).toHslString(),
+	};
+});
+
 function onStreamDriveFileCreated(file: Misskey.entities.DriveFile) {
 	addFile(file, true);
 }
@@ -879,5 +896,24 @@ onBeforeUnmount(() => {
 	height: calc(100% - 38px);
 	border: dashed 2px var(--MI_THEME-focus);
 	pointer-events: none;
+}
+
+.driveUsage {
+	display: flex;
+	flex-direction: column;
+	margin-right: 10px;
+}
+
+.meter {
+	height: 10px;
+	width: 155px;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 999px;
+	overflow: clip;
+}
+
+.meterValue {
+	height: 100%;
+	border-radius: 999px;
 }
 </style>
