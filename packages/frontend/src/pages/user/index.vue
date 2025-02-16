@@ -9,11 +9,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<div v-if="user">
 			<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-				<XHome v-if="tab === 'home'" key="home" :user="user"/>
+				<XHome v-if="tab === 'home'" key="home" :user="user" @unfoldFiles="() => { tab = 'files'; }"/>
 				<MkSpacer v-else-if="tab === 'notes'" key="notes" :contentMax="800" style="padding-top: 0">
 					<XTimeline :user="user"/>
 				</MkSpacer>
-				<XGalleryFromPosts v-else-if="tab === 'galleryFromPosts'" key="galleryFromPosts" :user="user"/>
+				<XGalleryFromPosts v-else-if="tab === 'files'" key="files" :user="user"/>
 				<XClipsMedia v-else-if="tab === 'clipsMedia'" key="clipsMedia" :user="user"/>
 				<XAchievements v-else-if="tab === 'achievements'" key="achievements" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" key="reactions" :user="user"/>
@@ -29,13 +29,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import {computed, defineAsyncComponent, ref, watch} from 'vue';
 import * as Misskey from 'misskey-js';
-import {acct as getAcct} from '@/filters/user.js';
-import {misskeyApi} from '@/scripts/misskey-api.js';
-import {definePageMetadata} from '@/scripts/page-metadata.js';
-import {i18n} from '@/i18n.js';
-import {$i} from '@/account.js';
+import { acct as getAcct } from '@/filters/user.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { getServerContext } from '@/server-context.js';
+import { serverContext, assertServerContext } from '@/server-context.js';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
@@ -45,12 +45,12 @@ const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
 const XGalleryFromPosts = defineAsyncComponent(() => import('./post-gallery.vue'));
 const XMore = defineAsyncComponent(() => import('./more.vue'));
 
-const CTX_USER = getServerContext('user');
+// contextは非ログイン状態の情報しかないためログイン時は利用できない
+const CTX_USER = !$i && assertServerContext(serverContext, 'user') ? serverContext.user : null;
 
 const props = withDefaults(defineProps<{
 	acct: string;
 	page?: string;
-	user: Misskey.entities.UserDetailed;
 }>(), {
 	page: 'home',
 });
@@ -96,7 +96,7 @@ const headerTabs = computed(() => user.value ? [{
 	title: i18n.ts.notes,
 	icon: 'ti ti-pencil',
 }, {
-	key: 'galleryFromPosts',
+	key: 'files',
 	title: i18n.ts.galleryFromPost,
 	icon: 'ti ti-icons',
 }, ...(user.value.host == null ? [{
