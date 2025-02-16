@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div class="_gaps_s" v-if="tab === ''">
 			<FormLink @click="tab = 'activity'"><template #icon><i class="ti ti-chart-line"></i></template>{{ i18n.ts.activity }}</FormLink>
+			<FormLink @click="tab = 'files'"><template #icon><i class="ti ti-photo"></i></template>{{ i18n.ts.files }}</FormLink>
 			<FormLink @click="tab = 'clips'"><template #icon><i class="ti ti-paperclip"></i></template>{{ i18n.ts.clips }}</FormLink>
 			<FormLink @click="tab = 'lists'"><template #icon><i class="ti ti-list"></i></template>{{ i18n.ts.lists }}</FormLink>
 			<FormLink @click="tab = 'pages'"><template #icon><i class="ti ti-news"></i></template>{{ i18n.ts.pages }}</FormLink>
@@ -18,6 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<!--<FormLink @click="tab = 'raw'"><template #icon><i class="ti ti-code"></i></template>Raw</FormLink>-->
 		</div>
 		<XActivity v-if="tab === 'activity'" :user="user_info"/>
+		<XFiles v-if="tab === 'files'" :user="user_info"/>
 		<XClips v-else-if="tab === 'clips'" :user="user_info"/>
 		<XLists v-else-if="tab === 'lists'" :user="user_info"/>
 		<XPages v-else-if="tab === 'pages'" :user="user_info"/>
@@ -34,7 +36,8 @@ import { i18n } from '@/i18n.js';
 import FormLink from "@/components/form/link_nohref.vue";
 import MkButton from "@/components/MkButton.vue";
 
-const XActivity = defineAsyncComponent(() => import('./activity.vue'));
+const XActivity = defineAsyncComponent(() => import('./activity.vue'))
+const XFiles = defineAsyncComponent(() => import('./files.vue'))
 const XClips = defineAsyncComponent(() => import('./clips.vue'));
 const XLists = defineAsyncComponent(() => import('./lists.vue'));
 const XPages = defineAsyncComponent(() => import('./pages.vue'));
