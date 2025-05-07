@@ -19,9 +19,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, watch } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
+import type { GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 
 const name = 'memo';
@@ -52,20 +52,21 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const getMemo = () => {
-	if (typeof defaultStore.state.memo === 'object') return defaultStore.state.memo?.[props.widget?.id ?? 'default'];
-	if (typeof defaultStore.state.memo === 'string') return defaultStore.state.memo;
-	return null;
-};
-
-const text = ref<string | null>(getMemo());
+const text = ref<string | null>(store.s.memo);
 const changed = ref(false);
 let timeoutId;
 
+const getMemo = () => {
+	if (typeof store.s.memo === 'object') return store.s.memo?.[props.widget?.id ?? 'default'];
+	if (typeof store.s.memo === 'string') return store.s.memo;
+	return null;
+};
+
 const saveMemo = () => {
-	const memo = typeof defaultStore.state.memo === 'object' ? defaultStore.state.memo : {};
+	store.set('memo', text.value);
+	const memo = typeof store.s.memo === 'object' ? store.s.memo : {};
 	memo![props.widget?.id ?? 'default'] = text.value;
-	defaultStore.set('memo', memo);
+	store.set('memo', memo);
 	changed.value = false;
 };
 
@@ -75,7 +76,7 @@ const onChange = () => {
 	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 
-watch(() => defaultStore.reactiveState.memo, () => {
+watch(() => store.r.memo, newText => {
 	text.value = getMemo();
 });
 
