@@ -23,7 +23,7 @@ import { computed, ref } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { misskeyApi } from "@/scripts/misskey-api.js";
