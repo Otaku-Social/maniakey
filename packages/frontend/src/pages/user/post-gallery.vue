@@ -4,19 +4,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<MkSpacer :contentMax="1100">
+	<div class="_spacer" style="--MI_SPACER-w: 1100px;">
 		<div :class="$style.root">
-			<MkSwitch v-model="nsfwNoConfirm">センシティブをモザイクなしで表示する</MkSwitch>
-			<MkSwitch v-model="moreColumn">列を増やして表示する</MkSwitch>
-		</div>
-		<div :class="$style.root">
-			<MkPagination v-slot="{items}" :pagination="pagination">
-				<div :class="[moreColumn ? $style.moreColumnsStream : $style.stream]">
-					<MkMedias v-for="note in items" :note="note" :nsfwNoConfirm="nsfwNoConfirm" :moreColumn="moreColumn"/>
-				</div>
-			</MkPagination>
-		</div>
-	</MkSpacer>
+				<MkSwitch v-model="nsfwNoConfirm">センシティブをモザイクなしで表示する</MkSwitch>
+				<MkSwitch v-model="moreColumn">列を増やして表示する</MkSwitch>
+			</div>
+			<div :class="$style.root">
+				<MkPagination v-slot="{items}" :pagination="pagination">
+					<div :class="[moreColumn ? $style.moreColumnsStream : $style.stream]">
+						<MkMedias v-for="note in items" :note="note" :nsfwNoConfirm="nsfwNoConfirm" :moreColumn="moreColumn"/>
+					</div>
+				</MkPagination>
+			</div>
+	</div>
 </template>
 
 <script lang="ts" setup>

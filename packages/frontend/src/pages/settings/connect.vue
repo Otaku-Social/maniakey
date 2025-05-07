@@ -15,7 +15,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label><i class="ti ti-api"></i> <SearchLabel>{{ i18n.ts._settings.api }}</SearchLabel></template>
 
 				<div class="_gaps_m">
-					<MkButton primary @click="generateToken">{{ i18n.ts.generateAccessToken }}</MkButton>
+					<div v-if="$i.policies.canCreateAccessToken">
+						<MkButton primary @click="generateToken">{{ i18n.ts.generateAccessToken }}</MkButton>
+					</div>
+					<div v-else>
+						<MkInfo warn>{{ i18n.ts.noPermissionToUseMiAuth }}</MkInfo>
+					</div>
 					<FormLink to="/settings/apps">{{ i18n.ts.manageAccessTokens }}</FormLink>
 					<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
 				</div>
@@ -72,6 +77,8 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import {$i} from "@/i";
+import MkInfo from "@/components/MkInfo.vue";
 
 const isDesktop = ref(window.innerWidth >= 1100);
 

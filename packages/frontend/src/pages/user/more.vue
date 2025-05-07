@@ -4,29 +4,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<MkSpacer :contentMax="720" :marginMin="20" :marginMax="32">
+	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps_s" v-if="tab !== ''">
-			<MkButton @click="tab = ''"><i class="ti ti-chevron-left"></i>戻る</MkButton>
-		</div>
-		<div class="_gaps_s" v-if="tab === ''">
-			<FormLink @click="tab = 'activity'"><template #icon><i class="ti ti-chart-line"></i></template>{{ i18n.ts.activity }}</FormLink>
-			<FormLink @click="tab = 'files'"><template #icon><i class="ti ti-photo"></i></template>{{ i18n.ts.files }}</FormLink>
-			<FormLink @click="tab = 'clips'"><template #icon><i class="ti ti-paperclip"></i></template>{{ i18n.ts.clips }}</FormLink>
-			<FormLink @click="tab = 'lists'"><template #icon><i class="ti ti-list"></i></template>{{ i18n.ts.lists }}</FormLink>
-			<FormLink @click="tab = 'pages'"><template #icon><i class="ti ti-news"></i></template>{{ i18n.ts.pages }}</FormLink>
-			<FormLink @click="tab = 'flashs'"><template #icon><i class="ti ti-player-play"></i></template>Play</FormLink>
-			<FormLink @click="tab = 'gallery'"><template #icon><i class="ti ti-icons"></i></template>{{ i18n.ts.gallery }}</FormLink>
-			<!--<FormLink @click="tab = 'raw'"><template #icon><i class="ti ti-code"></i></template>Raw</FormLink>-->
-		</div>
-		<XActivity v-if="tab === 'activity'" :user="user_info"/>
-		<XFiles v-if="tab === 'files'" :user="user_info"/>
-		<XClips v-else-if="tab === 'clips'" :user="user_info"/>
-		<XLists v-else-if="tab === 'lists'" :user="user_info"/>
-		<XPages v-else-if="tab === 'pages'" :user="user_info"/>
-		<XFlashs v-else-if="tab === 'flashs'" :user="user_info"/>
-		<XGallery v-else-if="tab === 'gallery'" :user="user_info"/>
-		<!--<XRaw v-else-if="tab === 'raw'" :user="user_info"/>-->
-	</MkSpacer>
+				<MkButton @click="tab = ''"><i class="ti ti-chevron-left"></i>戻る</MkButton>
+			</div>
+			<div class="_gaps_s" v-if="tab === ''">
+				<FormLink @click="tab = 'activity'"><template #icon><i class="ti ti-chart-line"></i></template>{{ i18n.ts.activity }}</FormLink>
+				<FormLink @click="tab = 'files'"><template #icon><i class="ti ti-photo"></i></template>{{ i18n.ts.files }}</FormLink>
+				<FormLink @click="tab = 'clips'"><template #icon><i class="ti ti-paperclip"></i></template>{{ i18n.ts.clips }}</FormLink>
+				<FormLink @click="tab = 'lists'"><template #icon><i class="ti ti-list"></i></template>{{ i18n.ts.lists }}</FormLink>
+				<FormLink @click="tab = 'pages'"><template #icon><i class="ti ti-news"></i></template>{{ i18n.ts.pages }}</FormLink>
+				<FormLink @click="tab = 'flashs'"><template #icon><i class="ti ti-player-play"></i></template>Play</FormLink>
+				<FormLink @click="tab = 'gallery'"><template #icon><i class="ti ti-icons"></i></template>{{ i18n.ts.gallery }}</FormLink>
+				<!--<FormLink @click="tab = 'raw'"><template #icon><i class="ti ti-code"></i></template>Raw</FormLink>-->
+			</div>
+			<XActivity v-if="tab === 'activity'" :user="user_info"/>
+			<XFiles v-if="tab === 'files'" :user="user_info"/>
+			<XClips v-else-if="tab === 'clips'" :user="user_info"/>
+			<XLists v-else-if="tab === 'lists'" :user="user_info"/>
+			<XPages v-else-if="tab === 'pages'" :user="user_info"/>
+			<XFlashs v-else-if="tab === 'flashs'" :user="user_info"/>
+			<XGallery v-else-if="tab === 'gallery'" :user="user_info"/>
+			<!--<XRaw v-else-if="tab === 'raw'" :user="user_info"/>-->
+	</div>
 </template>
 
 <script lang="ts" setup>

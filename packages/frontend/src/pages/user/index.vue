@@ -90,11 +90,11 @@ const headerTabs = computed(() => user.value ? [{
 	title: i18n.ts.notes,
 	icon: 'ti ti-pencil',
 }, {
-	key: 'files-ma',
+	key: 'files',
 	title: i18n.ts.galleryFromPost,
 	icon: 'ti ti-icons',
 }, ...(user.value.host == null ? [{
-	key: 'clipsMedia',
+	key: 'clips',
 	title: i18n.ts.clips,
 	icon: 'ti ti-paperclip',
 }] : []), ...(user.value.host == null ? [{

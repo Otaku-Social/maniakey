@@ -72,11 +72,11 @@ import MkPaginationNoMessage from "@/components/MkPaginationNoMessage.vue";
 import {i18n} from "@/i18n.js";
 import ImgWithBlurhash from "@/components/MkImgWithBlurhash.vue";
 import * as Misskey from "misskey-js";
-import {defaultStore} from "@/store.js";
-import {getStaticImageUrl} from "@/scripts/media-proxy.js";
+import {store} from "@/store.js";
+import {getStaticImageUrl} from "@/utility/media-proxy.js";
 
 function thumbnail(image: Misskey.entities.DriveFile): string {
-	return defaultStore.state.disableShowingAnimatedImages
+	return store.s.disableShowingAnimatedImages
 		? getStaticImageUrl(image.url)
 		: image.thumbnailUrl;
 }

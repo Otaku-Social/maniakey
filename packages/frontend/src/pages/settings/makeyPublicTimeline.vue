@@ -25,8 +25,8 @@ import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { misskeyApi } from "@/scripts/misskey-api.js";
+import { definePage } from '@/page.js';
+import { misskeyApi } from "@/utility/misskey-api.js";
 
 let makeyHideLocalTimeline = ref($i.makeyHideLocalTimeline);
 let makeyHideFederatedTimeline = ref($i.makeyHideFederatedTimeline);
@@ -47,8 +47,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePage(() => ({
 	title: '公開タイムライン',
 	icon: 'ti ti-world',
-});
+}));
 </script>
