@@ -77,7 +77,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import {$i} from "@/i";
+import { $i } from "@/i";
 import MkInfo from "@/components/MkInfo.vue";
 
 const isDesktop = ref(window.innerWidth >= 1100);

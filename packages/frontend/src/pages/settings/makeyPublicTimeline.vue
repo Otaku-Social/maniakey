@@ -31,16 +31,15 @@ import { misskeyApi } from "@/utility/misskey-api.js";
 let makeyHideLocalTimeline = ref($i.makeyHideLocalTimeline);
 let makeyHideFederatedTimeline = ref($i.makeyHideFederatedTimeline);
 
-
 function save() {
   misskeyApi('i/update', {
     makeyHideLocalTimeline: !!makeyHideLocalTimeline.value,
     makeyHideFederatedTimeline: !!makeyHideFederatedTimeline.value,
-  })
+  });
 }
 
 async function reloadPage() {
-	location.reload();
+	window.location.reload();
 }
 
 const headerActions = computed(() => []);

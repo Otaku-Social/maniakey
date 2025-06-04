@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed, ref} from 'vue';
+import { computed, ref } from 'vue';
 import { i18n } from '@/i18n.js';
 import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';

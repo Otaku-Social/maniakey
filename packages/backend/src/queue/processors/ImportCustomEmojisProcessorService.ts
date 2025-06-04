@@ -94,7 +94,7 @@ export class ImportCustomEmojisProcessorService {
 
 				// ショートコード重複時はスキップする
 				const isExist = await this.customEmojiService.checkDuplicate(emojiInfo.name);
-				if(!isExist) {
+				if (!isExist) {
 					try {
 						await this.emojisRepository.delete({
 							name: emojiInfo.name,

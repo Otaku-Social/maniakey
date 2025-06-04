@@ -47,6 +47,8 @@ function generateDummyUser(override?: Partial<MiUser>): MiUser {
 		isLocked: false,
 		isBot: false,
 		isCat: true,
+		makeyHideLocalTimeline: false,
+		makeyHideFederatedTimeline: false,
 		isExplorable: true,
 		isHibernated: false,
 		isDeleted: false,

@@ -5,10 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
-		<div class="_gaps_s" v-if="tab !== ''">
+		<div v-if="tab !== ''" class="_gaps_s">
 				<MkButton @click="tab = ''"><i class="ti ti-chevron-left"></i>戻る</MkButton>
 			</div>
-			<div class="_gaps_s" v-if="tab === ''">
+			<div v-if="tab === ''" class="_gaps_s">
 				<FormLink @click="tab = 'activity'"><template #icon><i class="ti ti-chart-line"></i></template>{{ i18n.ts.activity }}</FormLink>
 				<FormLink @click="tab = 'files'"><template #icon><i class="ti ti-photo"></i></template>{{ i18n.ts.files }}</FormLink>
 				<FormLink @click="tab = 'clips'"><template #icon><i class="ti ti-paperclip"></i></template>{{ i18n.ts.clips }}</FormLink>
@@ -36,8 +36,8 @@ import { i18n } from '@/i18n.js';
 import FormLink from "@/components/form/link_nohref.vue";
 import MkButton from "@/components/MkButton.vue";
 
-const XActivity = defineAsyncComponent(() => import('./activity.vue'))
-const XFiles = defineAsyncComponent(() => import('./files.vue'))
+const XActivity = defineAsyncComponent(() => import('./activity.vue'));
+const XFiles = defineAsyncComponent(() => import('./files.vue'));
 const XClips = defineAsyncComponent(() => import('./clips.vue'));
 const XLists = defineAsyncComponent(() => import('./lists.vue'));
 const XPages = defineAsyncComponent(() => import('./pages.vue'));
