@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<div class="_spacer" style="--MI_SPACER-w: 1100px;">
+	<div class="_spacer" style="--MI_SPACER-w: 1500px;">
 		<div :class="$style.root">
 				<MkSwitch v-model="nsfwNoConfirm">センシティブをモザイクなしで表示する</MkSwitch>
 				<MkSwitch v-model="moreColumn">列を増やして表示する</MkSwitch>
