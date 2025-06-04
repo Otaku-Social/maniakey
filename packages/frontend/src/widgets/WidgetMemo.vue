@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-FileCopyrightText: syuilo and other misskey contributors
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,21 +8,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #icon><i class="ti ti-note"></i></template>
 	<template #header>{{ widgetProps.name || i18n.ts._widgets.memo }}</template>
 
-	<div :class="$style.root">
+	<div>
 		<textarea v-model="text" :style="`height: ${widgetProps.height}px;`" :class="$style.textarea" :placeholder="i18n.ts.placeholder" @input="onChange"></textarea>
-		<button :class="$style.save" :disabled="!changed" class="_buttonPrimary" @click="saveMemo">{{ i18n.ts.save }}</button>
+		<div :class="$style.buttons">
+			<MkButton small @click="showMemoList"><i class="ti ti-list"></i></MkButton>
+			<MkButton small primary :disabled="!changed" @click="saveMemo">{{ i18n.ts.save }}</MkButton>
+		</div>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
+import { defineAsyncComponent, ref, watch } from 'vue';
+import { v4 as uuid } from 'uuid';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store.js';
+import MkButton from '@/components/MkButton.vue';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 
 const name = 'memo';
 
@@ -53,20 +58,38 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 );
 
 const getMemo = () => {
-	if (typeof defaultStore.state.memo === 'object') return defaultStore.state.memo?.[props.widget?.id ?? 'default'];
-	if (typeof defaultStore.state.memo === 'string') return defaultStore.state.memo;
-	return null;
+	if (!props.widget) return;
+	const memo = store.s.memo;
+	if (typeof memo === 'string') return memo;
+	if (memo && typeof memo === 'object') return memo[props.widget.id];
+	return;
 };
 
-const text = ref<string | null>(getMemo());
+const text = ref<string>(getMemo() ?? '');
 const changed = ref(false);
-let timeoutId;
+let timeoutId: number | undefined;
 
 const saveMemo = () => {
-	const memo = typeof defaultStore.state.memo === 'object' ? defaultStore.state.memo : {};
-	memo![props.widget?.id ?? 'default'] = text.value;
-	defaultStore.set('memo', memo);
+	const memo = store.s.memo;
+	const list = memo && typeof memo === 'object' ? memo : {};
+	list[props.widget?.id ?? uuid()] = text.value;
+	store.set('memo', list);
 	changed.value = false;
+};
+
+const showMemoList = () => {
+	if (!props.widget) {
+		os.alert({
+			type: 'error',
+			title: i18n.ts.error,
+			text: i18n.ts.somethingHappened,
+		});
+		return;
+	}
+
+	os.popup(defineAsyncComponent(() => import('@/components/MkMemoSelectDialog.vue')), {
+		widgetId: props.widget.id,
+	}, 'closed');
 };
 
 const onChange = () => {
@@ -75,8 +98,8 @@ const onChange = () => {
 	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 
-watch(() => defaultStore.reactiveState.memo, () => {
-	text.value = getMemo();
+watch(store.r.memo, () => {
+	text.value = getMemo() ?? '';
 });
 
 defineExpose<WidgetComponentExpose>({
@@ -87,20 +110,16 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" module>
-.root {
-	padding-bottom: 28px + 16px;
-}
-
 .textarea {
 	display: block;
 	width: 100%;
 	max-width: 100%;
 	min-width: 100%;
 	padding: 16px;
-	color: var(--MI_THEME-fg);
+	color: var(--fg);
 	background: transparent;
 	border: none;
-	border-bottom: solid 0.5px var(--MI_THEME-divider);
+	border-bottom: solid 0.5px var(--divider);
 	border-radius: 0;
 	box-sizing: border-box;
 	font: inherit;
@@ -111,20 +130,13 @@ defineExpose<WidgetComponentExpose>({
 	}
 }
 
-.save {
-	display: block;
-	position: absolute;
-	bottom: 8px;
-	right: 8px;
-	margin: 0;
-	padding: 0 10px;
-	height: 28px;
-	outline: none;
-	border-radius: 4px;
+.buttons {
+	display: flex;
+	justify-content: space-between;
+	margin: 10px;
 
-	&:disabled {
-		opacity: 0.7;
-		cursor: default;
+	& > * {
+		min-width: auto;
 	}
 }
 </style>

@@ -4,39 +4,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<MkSpacer :contentMax="1200">
+		<div class="_spacer" style="--MI_SPACER-w: 1200px;">
 		<div :class="$style.tabPadding">
-			<MkTab v-model="tab" class="tab">
-				<option :value="null">{{ i18n.ts.clip }}</option>
-				<option value="grid">{{ i18n.ts.grid }}</option>
-			</MkTab>
-		</div>
-		<div>
-			<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
-				<div v-if="tab === null">
-					<div v-for="item in items">
-							<MkA :key="item.id" :to="`/clips/${item.id}`" :class="$style.item" class="_panel _margin">
-								<div :class="$style.title">
+				<MkTab v-model="tab" class="tab">
+					<option :value="null">{{ i18n.ts.clip }}</option>
+					<option value="grid">{{ i18n.ts.grid }}</option>
+				</MkTab>
+			</div>
+			<div>
+				<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
+					<div v-if="tab === null">
+						<div v-for="item in items">
+								<MkA :key="item.id" :to="`/clips/${item.id}`" :class="$style.item" class="_panel _margin">
+									<div :class="$style.title">
+										<b>{{ item.name }}</b>
+									</div>
+									<div v-if="item.description" :class="$style.description">{{ item.description }}</div>
+									<MkClipsMedias :clipId="item.id" :grid="false" />
+								</MkA>
+						</div>
+					</div>
+					<div v-if="tab === 'grid'" :class="$style.gridContainer">
+						<div v-for="item in items">
+							<MkA :key="item.id" :to="`/clips/${item.id}`">
+								<MkClipsMedias :clipId="item.id" :grid="true" />
+								<div :class="$style.titleGrid">
 									<b>{{ item.name }}</b>
 								</div>
-								<div v-if="item.description" :class="$style.description">{{ item.description }}</div>
-								<MkClipsMedias :clipId="item.id" :grid="false" />
 							</MkA>
+						</div>
 					</div>
-				</div>
-				<div v-if="tab === 'grid'" :class="$style.gridContainer">
-					<div v-for="item in items">
-						<MkA :key="item.id" :to="`/clips/${item.id}`">
-							<MkClipsMedias :clipId="item.id" :grid="true" />
-							<div :class="$style.titleGrid">
-								<b>{{ item.name }}</b>
-							</div>
-						</MkA>
-					</div>
-				</div>
-			</MkPagination>
-		</div>
-	</MkSpacer>
+				</MkPagination>
+			</div>
+	</div>
 </template>
 
 <script lang="ts" setup>
@@ -45,7 +45,6 @@ import { i18n } from '@/i18n.js';
 import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkClipsMedias from '@/components/MkClipsMedias.vue';
-import MkSpacer from "@/components/global/MkSpacer.vue";
 import MkTab from '@/components/MkTab.vue';
 
 const tab = ref<string | null>(null);

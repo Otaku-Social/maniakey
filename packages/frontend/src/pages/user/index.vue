@@ -4,45 +4,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<div>
-		<div v-if="user">
-			<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
-				<XHome v-if="tab === 'home'" key="home" :user="user" @unfoldFiles="() => { tab = 'files-ma'; }"/>
-				<MkSpacer v-else-if="tab === 'notes'" key="notes" :contentMax="800" style="padding-top: 0">
-					<XTimeline :user="user"/>
-				</MkSpacer>
-				<XGalleryFromPosts v-else-if="tab === 'files-ma'" key="files-ma" :user="user"/>
-				<XClipsMedia v-else-if="tab === 'clipsMedia'" key="clipsMedia" :user="user"/>
-				<XAchievements v-else-if="tab === 'achievements'" key="achievements" :user="user"/>
-				<XReactions v-else-if="tab === 'reactions'" key="reactions" :user="user"/>
-        <XMore v-else-if="tab === 'more'" key="more" :user="user"/>
-      </MkHorizontalSwipe>
+<PageWithHeader v-model:tab="tab" :tabs="headerTabs" :actions="headerActions" :swipable="true">
+	<div v-if="user">
+		<XHome v-if="tab === 'home'" :user="user" @unfoldFiles="() => { tab = 'files'; }"/>
+		<div v-else-if="tab === 'notes'" class="_spacer" style="--MI_SPACER-w: 800px;">
+			<XTimeline :user="user"/>
 		</div>
-		<MkError v-else-if="error" @retry="fetchUser()"/>
-		<MkLoading v-else/>
+		<XFiles v-else-if="tab === 'files'" :user="user"/>
+		<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
+		<XReactions v-else-if="tab === 'reactions'" :user="user"/>
+		<XClipsMedia v-else-if="tab === 'clips'" :user="user"/>
+		<XMore v-else-if="tab === 'more'" :user="user"/>
 	</div>
-</MkStickyContainer>
+	<MkError v-else-if="error" @retry="fetchUser()"/>
+	<MkLoading v-else/>
+</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
 import {computed, defineAsyncComponent, ref, watch} from 'vue';
 import * as Misskey from 'misskey-js';
 import { acct as getAcct } from '@/filters/user.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
-import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import { $i } from '@/i.js';
 import { serverContext, assertServerContext } from '@/server-context.js';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
+const XFiles = defineAsyncComponent(() => import('./post-gallery.vue'));
 const XClipsMedia = defineAsyncComponent(() => import('./clipsMedia.vue'));
 const XAchievements = defineAsyncComponent(() => import('./achievements.vue'));
 const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
-const XGalleryFromPosts = defineAsyncComponent(() => import('./post-gallery.vue'));
 const XMore = defineAsyncComponent(() => import('./more.vue'));
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
@@ -96,11 +90,11 @@ const headerTabs = computed(() => user.value ? [{
 	title: i18n.ts.notes,
 	icon: 'ti ti-pencil',
 }, {
-	key: 'files-ma',
+	key: 'files',
 	title: i18n.ts.galleryFromPost,
 	icon: 'ti ti-icons',
 }, ...(user.value.host == null ? [{
-	key: 'clipsMedia',
+	key: 'clips',
 	title: i18n.ts.clips,
 	icon: 'ti ti-paperclip',
 }] : []), ...(user.value.host == null ? [{
@@ -118,7 +112,7 @@ const headerTabs = computed(() => user.value ? [{
 }] : [])
 ] : []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.user,
 	icon: 'ti ti-user',
 	...user.value ? {

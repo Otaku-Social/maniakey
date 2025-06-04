@@ -1,6 +1,6 @@
 # フォーク元 Misskey との機能差分一覧
 ## プロフィールページ
-- 投稿したメディアファイルの一覧をアクセス権がある範囲で表示（メディアタブ）
+- メディアタブで表示数を増やしたり、センシティブの確認をスキップできるように
 - パブリック設定のクリップでメディア付ノートをクリップしている場合、サムネイルを表示するように
 - タブを整理して「もっと！」に色々と集約している
 
@@ -21,3 +21,5 @@
 - 付箋を複数保存できるように
   - [隠れ家](https://github.com/hideki0403/kakurega.app)のソースコードを利用させていただきました
     - Cherry picked from https://github.com/hideki0403/kakurega.app/commit/75f4ec186872ab04327d8d88a65333e277d6d959
+    - Cherry picked and based on https://github.com/hideki0403/kakurega.app/commit/e7eaa3e6c278243726a11f19d64c5dd17ac7b705
+    - Cherry picked and based https://github.com/hideki0403/kakurega.app/commit/5734786d4b4d8cc8af40cc65d3dd4c924cdc4f26
