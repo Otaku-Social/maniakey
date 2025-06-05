@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkPaginationNoMessage v-slot="{items}" ref="list" :pagination="pagination">
 		<div v-if="items.length > 0">
 			<!-- サムネイル形式 -->
-			<div :class="$style.streamGrid" v-if="props.grid">
+			<div v-if="props.grid" :class="$style.streamGrid">
 				<div v-for="(file, fileIndex) in getAllFiles(items)">
 					<div v-if="fileIndex === 0">
 						<div v-if="file.type.startsWith('video')" :class="$style.imgGrid" style="background-color: #2d2d2d">
@@ -67,13 +67,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {computed} from 'vue';
+import { computed } from 'vue';
 import MkPaginationNoMessage from "@/components/MkPaginationNoMessage.vue";
-import {i18n} from "@/i18n.js";
+import { i18n } from "@/i18n.js";
 import ImgWithBlurhash from "@/components/MkImgWithBlurhash.vue";
 import * as Misskey from "misskey-js";
-import {store} from "@/store.js";
-import {getStaticImageUrl} from "@/utility/media-proxy.js";
+import { store } from "@/store.js";
+import { getStaticImageUrl } from "@/utility/media-proxy.js";
 
 function thumbnail(image: Misskey.entities.DriveFile): string {
 	return store.s.disableShowingAnimatedImages

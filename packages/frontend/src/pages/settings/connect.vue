@@ -77,7 +77,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import {$i} from "@/i";
+import { $i } from "@/i";
 import MkInfo from "@/components/MkInfo.vue";
 
 const isDesktop = ref(window.innerWidth >= 1100);
@@ -88,8 +88,8 @@ const pagination = {
 	noPaging: true,
 };
 
-function generateToken() {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTokenGenerateWindow.vue')), {}, {
+async function generateToken() {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkTokenGenerateWindow.vue').then(x => x.default), {}, {
 		done: async result => {
 			const { name, permissions } = result;
 			const { token } = await misskeyApi('miauth/gen-token', {

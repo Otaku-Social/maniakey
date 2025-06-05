@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<template #default="{ items: notes }">
-			<div :class="[$style.root, { [$style.noGap]: noGap }]" v-slot="{ item: note }">
+			<div v-slot="{ item: note }" :class="[$style.root, { [$style.noGap]: noGap }]">
 				<MkDateSeparatedList
 					ref="notes"
 					v-slot="{ item: note }"

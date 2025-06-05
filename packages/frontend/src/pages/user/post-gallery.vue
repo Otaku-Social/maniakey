@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 import MkMedias from "@/components/MkMedias.vue";
 import MkPagination from "@/components/MkPagination.vue";
-import {ref, computed, onMounted} from "vue";
+import { ref, computed, onMounted } from "vue";
 import * as Misskey from "misskey-js";
 import MkSwitch from "@/components/MkSwitch.vue";
 
