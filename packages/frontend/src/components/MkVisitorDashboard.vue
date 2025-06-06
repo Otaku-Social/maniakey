@@ -98,7 +98,7 @@ function showMenu(ev: MouseEvent) {
 }
 
 function lookLocalTimeline() {
-	location.href = '/timeline';
+	window.location.href = '/timeline';
 }
 </script>
 
