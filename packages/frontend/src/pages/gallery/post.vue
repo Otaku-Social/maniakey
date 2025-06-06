@@ -14,8 +14,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="grid">{{ i18n.ts.grid }}</option>
 					</MkTab>
 					<div class="files">
-						<div v-if="tab === null" v-for="file in post.files" :key="file.id" class="file">
-							<img :src="file.url"/>
+						<div v-if="tab === null" class="file">
+							<img v-for="file in post.files" :key="file.id" :src="file.url"/>
 						</div>
 						<div v-if="tab === 'grid'" >
 							<MkMediaList :mediaList="post.files"/>
@@ -241,6 +241,7 @@ definePage(() => ({
 				display: block;
 				max-width: 100%;
 				max-height: 500px;
+				padding: 5px;
 				margin: 0 auto;
 			}
 

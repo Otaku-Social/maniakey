@@ -9,10 +9,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<MkInfo>これらの設定をオンにしてもノートの公開範囲によっては公開タイムラインに掲載されます。画面に反映するにはリロードしてください。</MkInfo>
 	<div v-if="instance.policies.ltlAvailable && $i.policies.ltlAvailable">
-		<MkSwitch v-model="makeyHideLocalTimeline" @update:model-value="save()">ローカル・ソーシャルを非表示にする</MkSwitch>
+		<MkSwitch v-model="makeyHideLocalTimeline">ローカル・ソーシャルを非表示にする</MkSwitch>
 	</div>
 	<div v-if="instance.policies.gtlAvailable && $i.policies.gtlAvailable">
-		<MkSwitch v-model="makeyHideFederatedTimeline" @update:model-value="save()">グローバルを非表示にする</MkSwitch>
+		<MkSwitch v-model="makeyHideFederatedTimeline">グローバルを非表示にする</MkSwitch>
 	</div>
 	<MkButton primary @click="reloadPage"><i class="ti ti-refresh"></i>リロードして反映する</MkButton>
 </div>
@@ -39,6 +39,7 @@ function save() {
 }
 
 async function reloadPage() {
+	save();
 	window.location.reload();
 }
 
