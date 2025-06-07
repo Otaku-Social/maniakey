@@ -68,9 +68,8 @@ function getTickerColors(bgHex: string): ITickerColors {
 const themeColorStyle = computed<CSSProperties>(() => {
 	const themeColor = (props.host == null ? localInstance.themeColor : props.instance?.themeColor) ?? '#777777';
 	const colors = getTickerColors(themeColor);
-	const darkBg = tinycolor(colors.bg).darken(20).toHexString();
 	return {
-		background: `linear-gradient(90deg, ${darkBg}, ${darkBg}00)`,
+		background: `linear-gradient(90deg, ${colors.bg}, ${colors.bg}00)`,
 		color: colors.fg,
 	};
 });
