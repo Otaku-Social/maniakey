@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, shallowRef } from 'vue';
-import { v4 as uuid } from 'uuid';
+import { genId } from '@/utility/id.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
@@ -48,7 +48,7 @@ const props = defineProps<{
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 const selectMemo = (key: string) => {
-	memoList.value[uuid()] = memoList.value[props.widgetId];
+	memoList.value[genId()] = memoList.value[props.widgetId];
 	memoList.value[props.widgetId] = memoList.value[key];
 	delete memoList.value[key];
 	store.set('memo', memoList.value);
