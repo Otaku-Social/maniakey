@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div style="padding: 8px; text-align: center;">
 			<MkButton primary gradate rounded inline small @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
-		<MkStreamingNotesTimeline ref="timeline" src="channel" :channel="column.channelId"/>
+		<MkStreamingNotesTimeline ref="timeline" src="channel" :channel="column.channelId" :key="timelineKey"/>
 	</template>
 </XColumn>
 </template>
@@ -42,6 +42,7 @@ const props = defineProps<{
 const timeline = useTemplateRef('timeline');
 const channel = shallowRef<Misskey.entities.Channel>();
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
+const timelineKey = ref(0);
 
 onMounted(() => {
 	if (props.column.channelId == null) {
@@ -74,6 +75,8 @@ async function setChannel() {
 		channelId: chosenChannel.id,
 		name: chosenChannel.name,
 	});
+
+	timelineKey.value++;
 }
 
 async function post() {
