@@ -29,7 +29,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	memo: {
 		where: 'account',
-		default: null as null | string | Record<string, string>,
+		default: null as string | null,
 	},
 	reactionAcceptance: {
 		where: 'account',

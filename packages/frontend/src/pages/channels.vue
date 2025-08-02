@@ -18,34 +18,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
 			</div>
 
-			<MkFoldableSection v-if="channelPagination">
+			<MkFoldableSection v-if="channelPaginator">
 				<template #header>{{ i18n.ts.searchResult }}</template>
-				<MkChannelList :key="key" :pagination="channelPagination"/>
+				<MkChannelList :key="key" :paginator="channelPaginator"/>
 			</MkFoldableSection>
 		</div>
 		<div v-if="tab === 'allList'">
-			<MkPagination v-slot="{items}" :pagination="allListPagination">
+			<MkPagination v-slot="{items}" :paginator="allListPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
 			</MkPagination>
 		</div>
 		<div v-if="tab === 'featured'">
-			<MkPagination v-slot="{items}" :pagination="featuredPagination">
+			<MkPagination v-slot="{items}" :paginator="featuredPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'favorites'">
-			<MkPagination v-slot="{items}" :pagination="favoritesPagination">
+			<MkPagination v-slot="{items}" :paginator="favoritesPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'following'">
-			<MkPagination v-slot="{items}" :pagination="followingPagination">
+			<MkPagination v-slot="{items}" :paginator="followingPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-else-if="tab === 'owned'">
 			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
-			<MkPagination v-slot="{items}" :pagination="ownedPagination">
+			<MkPagination v-slot="{items}" :paginator="ownedPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
 				</div>
@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, markRaw, onMounted, ref, shallowRef } from 'vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkChannelList from '@/components/MkChannelList.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -75,6 +75,7 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -87,40 +88,35 @@ const key = ref('');
 const tab = ref('featured');
 const searchQuery = ref('');
 const searchType = ref('nameAndDescription');
-const channelPagination = ref();
+const channelPaginator = shallowRef();
 
 onMounted(() => {
 	searchQuery.value = props.query ?? '';
 	searchType.value = props.type ?? 'nameAndDescription';
 });
 
-const allListPagination = {
-	endpoint: 'channels/search' as const,
-	limit: 100,
+const allListPaginator = markRaw(new Paginator('channels/search', {
+	limit: 10,
 	params: {
 		query: '',
-		type: 'nameOnly',
+		type: searchType.value.toString().trim(),
 	},
-};
+}));
 
-const featuredPagination = {
-	endpoint: 'channels/featured' as const,
+const featuredPaginator = markRaw(new Paginator('channels/featured', {
 	limit: 10,
 	noPaging: true,
-};
-const favoritesPagination = {
-	endpoint: 'channels/my-favorites' as const,
+}));
+const favoritesPaginator = markRaw(new Paginator('channels/my-favorites', {
 	limit: 100,
 	noPaging: true,
-};
-const followingPagination = {
-	endpoint: 'channels/followed' as const,
+}));
+const followingPaginator = markRaw(new Paginator('channels/followed', {
 	limit: 10,
-};
-const ownedPagination = {
-	endpoint: 'channels/owned' as const,
+}));
+const ownedPaginator = markRaw(new Paginator('channels/owned', {
 	limit: 10,
-};
+}));
 
 async function search() {
 	const query = searchQuery.value.toString().trim();
@@ -129,14 +125,13 @@ async function search() {
 
 	const type = searchType.value.toString().trim();
 
-	channelPagination.value = {
-		endpoint: 'channels/search',
+	channelPaginator.value = markRaw(new Paginator('channels/search', {
 		limit: 10,
 		params: {
 			query: searchQuery.value,
 			type: type,
 		},
-	};
+	}));
 
 	key.value = query + type;
 }
