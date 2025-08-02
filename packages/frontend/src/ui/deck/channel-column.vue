@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div style="padding: 8px; text-align: center;">
 			<MkButton primary gradate rounded inline small @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
-		<MkStreamingNotesTimeline ref="timeline" src="channel" :channel="column.channelId" :key="timelineKey"/>
+		<MkStreamingNotesTimeline ref="timeline" :key="timelineKey" src="channel" :channel="column.channelId"/>
 	</template>
 </XColumn>
 </template>
