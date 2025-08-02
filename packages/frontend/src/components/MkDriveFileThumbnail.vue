@@ -12,43 +12,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 	}]"
 >
 	<MkLoading v-if="fetching"/>
-	<div v-show="!fetching">
-		<MkImgWithBlurhash
-			v-if="isThumbnailAvailable && prefer.s.enableHighQualityImagePlaceholders"
-			:hash="file.blurhash"
-			:src="file.thumbnailUrl"
-			:alt="file.name"
-			:title="file.name"
-			:class="$style.thumbnail"
-			:cover="fit !== 'contain'"
-			:forceBlurhash="forceBlurhash"
-			@loaded="onImageLoad"
-		/>
-		<img
-			v-else-if="isThumbnailAvailable"
-			:src="file.thumbnailUrl"
-			:alt="file.name"
-			:title="file.name"
-			:class="$style.thumbnail"
-			:style="{ objectFit: fit }"
-			@load="onImageLoad"
-		/>
-		<i v-else-if="is === 'image'" class="ti ti-photo" :class="$style.icon"></i>
-		<i v-else-if="is === 'video'" class="ti ti-video" :class="$style.icon"></i>
-		<i v-else-if="is === 'audio' || is === 'midi'" class="ti ti-file-music" :class="$style.icon"></i>
-		<i v-else-if="is === 'csv'" class="ti ti-file-text" :class="$style.icon"></i>
-		<i v-else-if="is === 'pdf'" class="ti ti-file-text" :class="$style.icon"></i>
-		<i v-else-if="is === 'textfile'" class="ti ti-file-text" :class="$style.icon"></i>
-		<i v-else-if="is === 'archive'" class="ti ti-file-zip" :class="$style.icon"></i>
-		<i v-else class="ti ti-file" :class="$style.icon"></i>
+	<MkImgWithBlurhash
+		v-show="!fetching"
+		v-if="isThumbnailAvailable && prefer.s.enableHighQualityImagePlaceholders"
+		:hash="file.blurhash"
+		:src="file.thumbnailUrl"
+		:alt="file.name"
+		:title="file.name"
+		:class="$style.thumbnail"
+		:cover="fit !== 'contain'"
+		:forceBlurhash="forceBlurhash"
+		@loaded="onImageLoad"
+	/>
+	<img
+		v-show="!fetching"
+		v-else-if="isThumbnailAvailable"
+		:src="file.thumbnailUrl"
+		:alt="file.name"
+		:title="file.name"
+		:class="$style.thumbnail"
+		:style="{ objectFit: fit }"
+		@load="onImageLoad"
+	/>
+	<i v-else-if="is === 'image'" class="ti ti-photo" :class="$style.icon"></i>
+	<i v-else-if="is === 'video'" class="ti ti-video" :class="$style.icon"></i>
+	<i v-else-if="is === 'audio' || is === 'midi'" class="ti ti-file-music" :class="$style.icon"></i>
+	<i v-else-if="is === 'csv'" class="ti ti-file-text" :class="$style.icon"></i>
+	<i v-else-if="is === 'pdf'" class="ti ti-file-text" :class="$style.icon"></i>
+	<i v-else-if="is === 'textfile'" class="ti ti-file-text" :class="$style.icon"></i>
+	<i v-else-if="is === 'archive'" class="ti ti-file-zip" :class="$style.icon"></i>
+	<i v-else class="ti ti-file" :class="$style.icon"></i>
 
-		<i v-if="isThumbnailAvailable && is === 'video'" class="ti ti-video" :class="$style.iconSub"></i>
-	</div>
+	<i v-if="isThumbnailAvailable && is === 'video'" class="ti ti-video" :class="$style.iconSub"></i>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { prefer } from '@/preferences.js';
@@ -64,6 +64,14 @@ const props = defineProps<{
 const onImageLoad = () => {
 	fetching.value = false;
 };
+
+onMounted(() => {
+	const willNotUseImage = !props.file.thumbnailUrl || !(is.value === 'image' || is.value === 'video');
+
+	if (willNotUseImage) {
+		fetching.value = false;
+	}
+});
 
 const is = computed(() => {
 	if (props.file.type.startsWith('image/')) return 'image';
@@ -113,6 +121,11 @@ const isThumbnailAvailable = computed(() => {
 	pointer-events: none;
 	border-radius: inherit;
 	box-shadow: inset 0 0 0 4px var(--MI_THEME-warn);
+}
+
+.panel {
+	width: 100%;
+	height: 100%;
 }
 
 .iconSub {
