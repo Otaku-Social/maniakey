@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<MkPaginationNoMessage v-slot="{items}" ref="list" :pagination="pagination">
+	<MkPaginationNoMessage v-slot="{items}" ref="list" :paginator="paginator">
 		<div v-if="items.length > 0">
 			<!-- サムネイル形式 -->
 			<div v-if="props.grid" :class="$style.streamGrid">
@@ -67,13 +67,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, markRaw } from 'vue';
 import MkPaginationNoMessage from "@/components/MkPaginationNoMessage.vue";
 import { i18n } from "@/i18n.js";
 import ImgWithBlurhash from "@/components/MkImgWithBlurhash.vue";
 import * as Misskey from "misskey-js";
 import { store } from "@/store.js";
 import { getStaticImageUrl } from "@/utility/media-proxy.js";
+import { Paginator } from '@/utility/paginator.js';
 
 function thumbnail(image: Misskey.entities.DriveFile): string {
 	return store.s.disableShowingAnimatedImages
@@ -91,16 +92,14 @@ function getAllFiles(items: Misskey.entities.Note[]) {
 const props = defineProps<{
 	grid: boolean;
 	clipId: string;
-	note: Misskey.entities.Note;
 }>();
 
-const pagination = {
-	endpoint: 'clips/file-notes' as const,
+const paginator = markRaw(new Paginator('clips/file-notes', {
 	limit: props.grid ? 1 : 6,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		clipId: props.clipId,
 	})),
-};
+}));
 
 </script>
 
@@ -120,6 +119,7 @@ const pagination = {
 	padding-top: 8px;
 	grid-template-columns: 1fr;
 	grid-auto-rows: 1fr;
+	overflow: clip;
 }
 
 .warn {

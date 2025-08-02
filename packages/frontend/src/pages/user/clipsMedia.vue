@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkTab>
 			</div>
 			<div>
-				<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
+				<MkPagination v-slot="{items}" ref="list" :paginator="paginator">
 					<div v-if="tab === null">
 						<div v-for="item in items">
 								<MkA :key="item.id" :to="`/clips/${item.id}`" :class="$style.item" class="_panel _margin">
@@ -40,25 +40,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, markRaw } from 'vue';
 import { i18n } from '@/i18n.js';
 import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkClipsMedias from '@/components/MkClipsMedias.vue';
 import MkTab from '@/components/MkTab.vue';
+import {Paginator} from "@/utility/paginator";
 
 const tab = ref<string | null>(null);
 const props = defineProps<{
 	user: Misskey.entities.User;
 }>();
 
-const pagination = {
-	endpoint: 'users/clips' as const,
+const paginator = markRaw(new Paginator('users/clips', {
 	limit: 20,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		userId: props.user.id,
 	})),
-};
+}));
 </script>
 
 <style lang="scss" module>
