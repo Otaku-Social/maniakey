@@ -41,6 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			draggable="false"
 			tabindex="-1"
 			style="-webkit-user-drag: none;"
+			@load="onLoad"
 		/>
 	</TransitionGroup>
 </div>
@@ -86,6 +87,10 @@ import { genId } from '@/utility/id.js';
 import { render } from 'buraha';
 import { prefer } from '@/preferences.js';
 
+const emit = defineEmits<{
+	(e: 'loaded'): void;
+}>();
+
 const props = withDefaults(defineProps<{
 	transition?: {
 		duration?: number | { enter: number; leave: number; };
@@ -128,6 +133,11 @@ const imgWidth = ref(props.width);
 const imgHeight = ref(props.height);
 const bitmapTmp = ref<CanvasImageSource | undefined>();
 const hide = computed(() => !loaded.value || props.forceBlurhash);
+
+function onLoad() {
+	loaded.value = true;
+	emit('loaded');
+}
 
 function waitForDecode() {
 	if (props.src != null && props.src !== '') {
