@@ -8,7 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div
 		v-if="(((
 			(prefer.s.nsfw === 'force' || file.isSensitive) &&
-			prefer.s.nsfw !== 'ignore'
+			prefer.s.nsfw !== 'ignore' &&
+			!nsfwNoConfirm
 		) || (prefer.s.dataSaver.media && file.type.startsWith('image/'))) &&
 			!showingFiles.has(file.id)
 		)"
@@ -56,6 +57,7 @@ import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 defineProps<{
 	note: Misskey.entities.Note;
 	square?: boolean;
+	nsfwNoConfirm: boolean;
 }>();
 
 const showingFiles = ref<Set<string>>(new Set());

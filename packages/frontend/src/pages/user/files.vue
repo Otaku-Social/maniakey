@@ -5,10 +5,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_spacer" style="--MI_SPACER-w: 1100px;">
+	<MkSwitch v-model="nsfwNoConfirm">NSFWの画像をモザイクなしで表示する</MkSwitch>
 	<div :class="$style.root">
 		<MkPagination v-slot="{items}" :paginator="paginator" withControl>
 			<div :class="$style.stream">
-				<MkNoteMediaGrid v-for="note in items" :note="note" square/>
+				<MkNoteMediaGrid v-for="note in items" :note="note" :nsfwNoConfirm="nsfwNoConfirm" square/>
 			</div>
 		</MkPagination>
 	</div>
@@ -16,12 +17,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw } from 'vue';
+import { computed, markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNoteMediaGrid from '@/components/MkNoteMediaGrid.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { Paginator } from '@/utility/paginator.js';
+import MkSwitch from "@/components/MkSwitch.vue";
 
+const nsfwNoConfirm = ref<boolean>(false);
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
