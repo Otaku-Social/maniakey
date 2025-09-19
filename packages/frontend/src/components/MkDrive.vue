@@ -156,7 +156,7 @@ import { claimAchievement } from '@/utility/achievements.js';
 import { prefer } from '@/preferences.js';
 import { chooseFileFromPcAndUpload, selectDriveFolder } from '@/utility/drive.js';
 import { store } from '@/store.js';
-import { isSeparatorNeeded, getSeparatorInfo, makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
+import { makeDateGroupedTimelineComputedRef } from '@/utility/timeline-date-separate.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
@@ -165,11 +165,12 @@ import bytes from "@/filters/bytes.js";
 import MkA from "@/components/global/MkA.vue";
 
 const props = withDefaults(defineProps<{
-	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
+	initialFolder?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder['id'] | null;
 	type?: string;
 	multiple?: boolean;
 	select?: 'file' | 'folder' | null;
 }>(), {
+	initialFolder: null,
 	multiple: false,
 	select: null,
 });
@@ -327,7 +328,7 @@ function onDragleave() {
 	draghover.value = false;
 }
 
-function onDrop(ev: DragEvent) {
+function onDrop(ev: DragEvent): void | boolean {
 	draghover.value = false;
 
 	if (!ev.dataTransfer) return;
@@ -397,7 +398,7 @@ function onDrop(ev: DragEvent) {
 	//#endregion
 }
 
-function onUploadRequested(files: File[], folder: Misskey.entities.DriveFolder | null) {
+function onUploadRequested(files: File[], folder?: Misskey.entities.DriveFolder | null) {
 	os.launchUploader(files, {
 		folderId: folder?.id ?? null,
 	});
@@ -732,7 +733,7 @@ useGlobalEvent('driveFoldersDeleted', (folders) => {
 	}
 });
 
-let connection: Misskey.ChannelConnection<Misskey.Channels['drive']> | null = null;
+let connection: Misskey.IChannelConnection<Misskey.Channels['drive']> | null = null;
 
 onMounted(() => {
 	if (store.s.realtimeMode) {
