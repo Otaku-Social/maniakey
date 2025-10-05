@@ -116,7 +116,6 @@ import { prefer } from '@/preferences.js';
 import { isSafeMode } from '@@/js/config.js';
 import * as os from '@/os.js';
 import { $i } from '@/i.js';
-import MkInfo from "@/components/MkInfo.vue";
 
 const plugins = prefer.r.plugins;
 
