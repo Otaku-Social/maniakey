@@ -5,15 +5,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 		<div class="_spacer" style="--MI_SPACER-w: 1200px;">
-		<div :class="$style.tabPadding">
-				<MkTab v-model="tab" class="tab">
-					<option :value="null">{{ i18n.ts.clip }}</option>
-					<option value="grid">{{ i18n.ts.grid }}</option>
+			<div :class="$style.tabPadding">
+				<MkTab
+					v-model="tab"
+					:tabs="[
+						{ key: 'list', label: i18n.ts.clip },
+						{ key: 'grid', label: i18n.ts.grid },
+					]"
+					:class="$style.tab"
+				>
 				</MkTab>
 			</div>
 			<div>
 				<MkPagination v-slot="{items}" ref="list" :paginator="paginator">
-					<div v-if="tab === null">
+					<div v-if="tab === 'list'">
 						<div v-for="item in items">
 								<MkA :key="item.id" :to="`/clips/${item.id}`" :class="$style.item" class="_panel _margin">
 									<div :class="$style.title">
@@ -46,9 +51,9 @@ import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkClipsMedias from '@/components/MkClipsMedias.vue';
 import MkTab from '@/components/MkTab.vue';
-import {Paginator} from "@/utility/paginator";
+import { Paginator } from "@/utility/paginator";
 
-const tab = ref<string | null>(null);
+const tab = ref<'list' | 'grid'>('list');
 const props = defineProps<{
 	user: Misskey.entities.User;
 }>();

@@ -20,7 +20,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkError v-else-if="paginator.error.value" @retry="paginator.init()"/>
 
-
 				<div v-else key="_root_">
 					<slot :items="unref(paginator.items)" :fetching="paginator.fetching.value || paginator.fetchingOlder.value"></slot>
 					<div v-if="paginator.order.value === 'oldest'">

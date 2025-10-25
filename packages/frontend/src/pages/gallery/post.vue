@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div class="body">
 						<div class="title">{{ post.title }}</div>
-						<div class="description"><Mfm :text="post.description"/></div>
+						<div class="description"><Mfm v-if="post.description != null" :text="post.description"/></div>
 						<div class="info">
 							<i class="ti ti-clock"></i> <MkTime :time="post.createdAt" mode="detail"/>
 						</div>
@@ -103,7 +103,7 @@ const error = ref<any>(null);
 const otherPostsPaginator = markRaw(new Paginator('users/gallery/posts', {
 	limit: 6,
 	computedParams: computed(() => ({
-		userId: post.value.user.id,
+		userId: post.value!.user.id,
 	})),
 }));
 
@@ -119,33 +119,38 @@ function fetchPost() {
 }
 
 function copyLink() {
+	if (!post.value) return;
 	copyToClipboard(`${url}/gallery/${post.value.id}`);
 }
 
 function share() {
+	if (!post.value) return;
 	navigator.share({
 		title: post.value.title,
-		text: post.value.description,
+		text: post.value.description ?? undefined,
 		url: `${url}/gallery/${post.value.id}`,
 	});
 }
 
 function shareWithNote() {
+	if (!post.value) return;
 	os.post({
 		initialText: `${post.value.title} ${url}/gallery/${post.value.id}`,
 	});
 }
 
 function like() {
+	if (!post.value) return;
 	os.apiWithDialog('gallery/posts/like', {
 		postId: props.postId,
 	}).then(() => {
-		post.value.isLiked = true;
-		post.value.likedCount++;
+		post.value!.isLiked = true;
+		post.value!.likedCount++;
 	});
 }
 
 async function unlike() {
+	if (!post.value) return;
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.unlikeConfirm,
@@ -154,8 +159,8 @@ async function unlike() {
 	os.apiWithDialog('gallery/posts/unlike', {
 		postId: props.postId,
 	}).then(() => {
-		post.value.isLiked = false;
-		post.value.likedCount--;
+		post.value!.isLiked = false;
+		post.value!.likedCount--;
 	});
 }
 
