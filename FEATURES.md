@@ -17,7 +17,7 @@
 - ドライブで空き容量を表示するように
 - フォーク元と本リポジトリのソースコードへのリンクを追加
 - 未ログイン時にローカルタイムラインへのアクセスをしやすく
-- ギャラリーをグリッド表示に対応
+- クリップをグリッド表示に対応
 - 付箋を複数保存できるように
   - [隠れ家](https://github.com/hideki0403/kakurega.app)のソースコードを利用させていただきました
     - Cherry picked from https://github.com/hideki0403/kakurega.app/commit/75f4ec186872ab04327d8d88a65333e277d6d959
