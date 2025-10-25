@@ -72,7 +72,7 @@ import { definePage } from '@/page.js';
 import { clipsCache } from '@/cache.js';
 import { Paginator } from '@/utility/paginator.js';
 import number from "@/filters/number";
-import {$i} from "@/i";
+import { $i } from "@/i";
 
 const tab = ref('my');
 

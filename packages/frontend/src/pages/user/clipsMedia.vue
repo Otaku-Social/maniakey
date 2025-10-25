@@ -51,7 +51,7 @@ import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkClipsMedias from '@/components/MkClipsMedias.vue';
 import MkTab from '@/components/MkTab.vue';
-import {Paginator} from "@/utility/paginator";
+import { Paginator } from "@/utility/paginator";
 
 const tab = ref<'list' | 'grid'>('list');
 const props = defineProps<{
