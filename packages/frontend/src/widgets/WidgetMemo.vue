@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -34,6 +34,7 @@ const name = 'memo';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	name: {
@@ -42,6 +43,7 @@ const widgetPropsDef = {
 	},
 	height: {
 		type: 'number',
+		label: i18n.ts.height,
 		default: 100,
 	},
 } satisfies FormWithDefault;
@@ -67,7 +69,7 @@ const getMemo = () => {
 
 const text = ref<string>(getMemo() ?? '');
 const changed = ref(false);
-let timeoutId: number | undefined;
+let timeoutId: number | null = null;
 
 const saveMemo = () => {
 	const memo = store.s.memo;
@@ -94,7 +96,7 @@ const showMemoList = () => {
 
 const onChange = () => {
 	changed.value = true;
-	window.clearTimeout(timeoutId);
+	if (timeoutId != null) window.clearTimeout(timeoutId);
 	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 
@@ -110,16 +112,20 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" module>
+.root {
+	padding-bottom: 28px + 16px;
+}
+
 .textarea {
 	display: block;
 	width: 100%;
 	max-width: 100%;
 	min-width: 100%;
 	padding: 16px;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	background: transparent;
 	border: none;
-	border-bottom: solid 0.5px var(--divider);
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 	border-radius: 0;
 	box-sizing: border-box;
 	font: inherit;
@@ -127,6 +133,23 @@ defineExpose<WidgetComponentExpose>({
 
 	&:focus-visible {
 		outline: none;
+	}
+}
+
+.save {
+	display: block;
+	position: absolute;
+	bottom: 8px;
+	right: 8px;
+	margin: 0;
+	padding: 0 10px;
+	height: 28px;
+	outline: none;
+	border-radius: 4px;
+
+	&:disabled {
+		opacity: 0.7;
+		cursor: default;
 	}
 }
 

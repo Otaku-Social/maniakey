@@ -1,43 +1,42 @@
-name: 🐛 不具合報告
-description: 不具合だと感じた方はこちら
-labels: ["⚠️不具合審査中"]
+name: 🐛 Bug Report
+description: Create a report to help us improve
+labels: ["⚠️bug?"]
 
 body:
   - type: markdown
     attributes:
       value: |
-        ご報告いただきありがとうございます！
-        報告の前に同様の事象が本リポジトリまたは、フォーム元の misskey-dev/misskey で投稿されていないがご確認ください。
-        もしOtaku Socialが運営するMisskeyサーバー以外で発生している事象の場合は、本フォームではなく在籍中のサーバー管理者までご連絡ください。（本フォームはOtaku Socialが管理するMisskeyサーバーのブランチのため、他サーバーの事象については対応できません。）
+        Thanks for reporting!
+        First, in order to avoid duplicate Issues, please search to see if the problem you found has already been reported.
+        Also, If you are NOT owner/admin of server, PLEASE DONT REPORT SERVER SPECIFIC ISSUES TO HERE! (e.g. feature XXX is not working in misskey.example) Please try with another misskey servers, and if your issue is only reproducible with specific server, contact your server's owner/admin first.
 
   - type: textarea
     attributes:
-      label: 💡 概要
-      description: どういった不具合なのかを教えてください。
+      label: 💡 Summary
+      description: Tell us what the bug is
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: 🥰 期待する動作
-      description: どういった動作が正しいものかをご記載ください。
+      label: 🥰 Expected Behavior
+      description: Tell us what should happen
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: 🤬 現在の動作
+      label: 🤬 Actual Behavior
       description: |
-        現在の動作についてご記載下さい。
-        もし画面にエラーが表示された場合は、合わせてご記入ください。
+        Tell us what happens instead of the expected behavior.
+        Please include errors from the developer console and/or server log files if you have access to them.
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: 📝 再現手順
+      label: 📝 Steps to Reproduce
       placeholder: |
-        事象発生までの再現手順をできるだけ具体的にご記載ください。
         1.
         2.
         3.
@@ -46,16 +45,53 @@ body:
 
   - type: textarea
     attributes:
-      label: 💻 利用環境
+      label: 💻 Frontend Environment
       description: |
-        不具合が発生した環境を記載してください。
+        Tell us where on the platform it happens
+        DO NOT WRITE "latest". Please provide the specific version.
 
-        例:
-          * OSや端末名: Windows 11 64bit (23H2)
-          * ご利用のブラウザ: Google Chrome 121.0.6167.185（Official Build） （64 ビット）
+        Examples:
+          * Model and OS of the device(s): MacBook Pro (14inch, 2021), macOS Ventura 13.4
+          * Browser: Chrome 113.0.5672.126
+          * Server URL: misskey.example.com
+          * Misskey: 2026.x.x
       value: |
-        * OSや端末名:
-        * ご利用のブラウザ:
+        * Model and OS of the device(s):
+        * Browser:
+        * Server URL:
+        * Misskey:
       render: markdown
     validations:
       required: false
+
+  - type: textarea
+    attributes:
+      label: 🛰 Backend Environment (for server admin)
+      description: |
+        Tell us where on the platform it happens
+        DO NOT WRITE "latest". Please provide the specific version.
+        If you are using a managed service, put that after the version.
+
+        Examples:
+          * Installation Method or Hosting Service: docker compose, k8s/docker, systemd, "Misskey install shell script", development environment
+          * Misskey: 2026.x.x
+          * Node: 20.x.x
+          * PostgreSQL: 18.x.x
+          * Redis: 7.x.x
+          * OS and Architecture: Ubuntu 24.04.2 LTS aarch64
+      value: |
+        * Installation Method or Hosting Service:
+        * Misskey:
+        * Node:
+        * PostgreSQL:
+        * Redis:
+        * OS and Architecture:
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    attributes:
+      label: Do you want to address this bug yourself?
+      options:
+        - label: Yes, I will patch the bug myself and send a pull request
