@@ -309,6 +309,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</XFolder>
 
+		<XFolder v-if="matchQuery([i18n.ts._role._options.canCreateAccessToken, 'canCreateAccessToken'])" v-model:policyMeta="policyMetaModel.canCreateAccessToken" :isBaseRole="isBaseRole" :readonly="readonly">
+			<template #label>{{ i18n.ts._role._options.canCreateAccessToken }}</template>
+			<template #valueText>{{ valuesModel.canCreateAccessToken ? i18n.ts.yes : i18n.ts.no }}</template>
+			<template #default="{ disabled }">
+				<MkSwitch v-model="valuesModel.canCreateAccessToken" :disabled="disabled">
+					<template #label>{{ i18n.ts.enable }}</template>
+				</MkSwitch>
+			</template>
+		</XFolder>
+
 		<XFolder v-if="matchQuery([i18n.ts._role._options.canImportAntennas, 'canImportAntennas'])" v-model:policyMeta="policyMetaModel.canImportAntennas" :isBaseRole="isBaseRole" :readonly="readonly">
 			<template #label>{{ i18n.ts._role._options.canImportAntennas }}</template>
 			<template #valueText>{{ valuesModel.canImportAntennas ? i18n.ts.yes : i18n.ts.no }}</template>
