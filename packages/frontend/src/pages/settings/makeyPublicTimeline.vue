@@ -40,7 +40,9 @@ function save() {
 
 async function reloadPage() {
 	save();
-	window.location.reload();
+	setTimeout(() => {
+		window.location.reload();
+	}, 500);
 }
 
 const headerActions = computed(() => []);
