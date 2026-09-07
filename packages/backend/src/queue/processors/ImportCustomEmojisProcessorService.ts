@@ -64,10 +64,8 @@ export class ImportCustomEmojisProcessorService {
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
-
 		private customEmojiService: CustomEmojiService,
 		private driveService: DriveService,
 		private downloadService: DownloadService,
@@ -117,7 +115,7 @@ export class ImportCustomEmojisProcessorService {
 				let metaFound = false;
 				for await (const entry of zip.entries()) {
 					if (entry.filename !== 'meta.json') continue;
-					await zip.extractToFile(entry, metaPath, { maxBytes: MAX_META_JSON_SIZE });
+					await zip.extractToFile(entry, metaPath, {maxBytes: MAX_META_JSON_SIZE});
 					metaFound = true;
 				}
 				if (!metaFound) {
@@ -154,7 +152,7 @@ export class ImportCustomEmojisProcessorService {
 
 					const emojiPath = outputPath + '/' + entry.filename;
 					try {
-						await zip.extractToFile(entry, emojiPath, { maxBytes: MAX_EMOJI_FILE_SIZE });
+						await zip.extractToFile(entry, emojiPath, {maxBytes: MAX_EMOJI_FILE_SIZE});
 					} catch (e) {
 						if (e instanceof Error || typeof e === 'string') {
 							this.logger.error(`couldn't extract ${entry.filename}: ${e}`);
@@ -164,11 +162,11 @@ export class ImportCustomEmojisProcessorService {
 
 					try {
 						for (const record of records) {
-							await this.importEmoji(record, emojiPath);
+							await this.importEmoji(record, emojiPath, job.data.user.id);
 						}
 					} finally {
 						// ドライブへ取り込み済みなので、都度削除する
-						await fs.promises.rm(emojiPath, { force: true });
+						await fs.promises.rm(emojiPath, {force: true});
 					}
 				}
 
@@ -192,56 +190,47 @@ export class ImportCustomEmojisProcessorService {
 	}
 
 	@bindThis
-	private async importEmoji(record: EmojiRecord, emojiPath: string): Promise<void> {
+	private async importEmoji(record: EmojiRecord, emojiPath: string, userId: string): Promise<void> {
 		const emojiInfo = record.emoji;
-		try {
-			await this.emojisRepository.delete({
-				name: emojiInfo.name,
-				host: IsNull(),
+
+		// ショートコード重複時はスキップする
+		if (await this.customEmojiService.checkDuplicate(emojiInfo.name)) {
+			this.logger.info(`[SKIP IMPORT] ${emojiInfo.name} is duplicate.`);
+			this.notificationService.createNotification(userId, 'app', {
+				appAccessTokenId: null,
+				customBody: `${emojiInfo.name} はショートコードが重複しているためスキップされました。`,
+				customHeader: '[システム] 絵文字インポート',
+				customIcon: null,
 			});
+			return;
+		}
 
-				// ショートコード重複時はスキップする
-				const isExist = await this.customEmojiService.checkDuplicate(emojiInfo.name);
-				if (!isExist) {
-					try {
-						await this.emojisRepository.delete({
-							name: emojiInfo.name,
-						});
-
-						const driveFile = await this.driveService.addFile({
-							user: null,
-							path: emojiPath,
-							name: record.fileName,
-							force: true,
-						});
-						await this.customEmojiService.add({
-							originalUrl: driveFile.url,
-							publicUrl: driveFile.webpublicUrl ?? driveFile.url,
-							fileType: driveFile.webpublicType ?? driveFile.type,
-							name: emojiInfo.name,
-							category: emojiInfo.category,
-							host: null,
-							aliases: emojiInfo.aliases,
-							license: emojiInfo.license,
-							isSensitive: emojiInfo.isSensitive,
-							localOnly: emojiInfo.localOnly,
-							roleIdsThatCanBeUsedThisEmojiAsReaction: [],
-						});
-					} catch (e) {
-						if (e instanceof Error || typeof e === 'string') {
-							this.logger.error(`couldn't import ${emojiPath} for ${emojiInfo.name}: ${e}`);
-						}
-					}
-				} else {
-					this.notificationService.createNotification(job.data.user.id, 'app', {
-						appAccessTokenId: null,
-						customBody: `${emojiInfo.name} はショートコードが重複しているためスキップされました。`,
-						customHeader: '[システム] 絵文字インポート',
-						customIcon: null
-					});
-					this.logger.info(`[SKIP IMPORT] ${emojiInfo.name} is duplicate.`);
-				}
+		try {
+			const driveFile = await this.driveService.addFile({
+				user: null,
+				path: emojiPath,
+				name: record.fileName,
+				force: true,
+			});
+			await this.customEmojiService.add({
+				originalUrl: driveFile.url,
+				publicUrl: driveFile.webpublicUrl ?? driveFile.url,
+				fileType: driveFile.webpublicType ?? driveFile.type,
+				name: emojiInfo.name,
+				category: emojiInfo.category,
+				host: null,
+				aliases: emojiInfo.aliases,
+				license: emojiInfo.license,
+				isSensitive: emojiInfo.isSensitive,
+				localOnly: emojiInfo.localOnly,
+				roleIdsThatCanBeUsedThisEmojiAsReaction: [],
+			});
+		} catch (e) {
+			if (e instanceof Error || typeof e === 'string') {
+				this.logger.error(`couldn't import ${emojiPath} for ${emojiInfo.name}: ${e}`);
 			}
 		}
 	}
+
 }
+
